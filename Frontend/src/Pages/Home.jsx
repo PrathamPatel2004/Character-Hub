@@ -15,7 +15,8 @@ const Home = () => {
     const [recentCharacters, setRecentCharacters ] = useState([]);
     const [recentSeries, setRecentSeries ] = useState([]);
     const [users, setUsers] = useState([]);
-  
+    const [loadingData, setLoadingData] = useState(true);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -74,8 +75,9 @@ const Home = () => {
             const recent = characters.filter((character) => {
                 if (!character.createdAt) return false; 
                 const created = new Date(character.createdAt).getTime();
-                return now - created <  15 * 24 * 60 * 60 * 1000;
-            }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                return now - created < 15 * 24 * 60 * 60 * 1000;
+            })
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 6);
             setRecentCharacters(recent);
         }
@@ -85,12 +87,19 @@ const Home = () => {
             const recentSeries = series.filter((series) => {
                 if (!series.createdAt) return false; 
                 const created = new Date(series.createdAt).getTime();
-                return now - created <  15 * 24 * 60 * 60 * 1000;
-            }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                return now - created < 15 * 24 * 60 * 60 * 1000;
+            })
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 3);
             setRecentSeries(recentSeries);
         }
-    }, [characters], [series]);
+
+        setLoadingData(false);
+    }, [characters, series]);
+
+    if (loadingData) {
+        return null;
+    }
 
     return (
         <div className="min-h-screen">
@@ -149,10 +158,10 @@ const Home = () => {
 
             <section className="py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-8">
+                    <div className="flex flex-wrap justify-between px-16">
                         <div className="text-center">
                             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <AccountCircleIcon className="h-8 w-8 text-blue-600" />
+                                <TrendingUpIcon className="h-8 w-8 text-blue-600" />
                             </div>
                             <div className="text-3xl font-bold text-gray-900 mb-2">{characters?.length}</div>
                             <div className="text-gray-600">Characters</div>
@@ -166,7 +175,7 @@ const Home = () => {
                         </div>
                         <div className="text-center">
                             <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <TrendingUpIcon className="h-8 w-8 text-green-600" />
+                                <AccountCircleIcon className="h-8 w-8 text-green-600" />
                             </div>
                             <div className="text-3xl font-bold text-gray-900 mb-2">{users?.length}</div>
                             <div className="text-gray-600">Users</div>
@@ -208,7 +217,7 @@ const Home = () => {
                             View All Characters
                         </Link>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid:cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                         {recentCharacters?.map((character) => (
                             <CharacterCard key={character._id} character={character} />
                         ))}

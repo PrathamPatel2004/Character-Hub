@@ -2,11 +2,10 @@ import CharacterModel from '../Models/CharacterModel.js';
 import SeriesModel from '../Models/SeriesModel.js';
 import sendEmail from '../Config/sendEmail.js';
 import UserModel from '../Models/UserModel.js';
-import CategoriesModel from '../Models/CategoriesModel.js';
 
 export const getCharacter = async (req, res) => {
     try {
-        const character = await CharacterModel.findById(req.params.id).populate('category', 'slug category icon').populate('seriesName', 'seriesName coverImage').populate('addedBy', 'username profilePic charactersAdd followers').lean();
+        const character = await CharacterModel.findById(req.params.id).populate('category', 'slug category icon').populate('seriesName', 'seriesName coverImage tags').populate('addedBy', 'username profilePic charactersAdd followers').lean();
         res.status(200).json({ character });
     } catch (err) {
         console.error(err);

@@ -56,6 +56,33 @@ const useComments = ({ seriesId, characterId } = {}) => {
         }
     };
 
+    const deleteComment = async (commentId) => {
+        try {
+            const res = await fetch("http://localhost:5000/api/comments/delete-comment", {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ commentId }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to delete comment");
+            }
+
+            toast.success("Comment deleted successfully");
+
+            setComments(prev => prev.filter(c => c._id !== commentId));
+
+        } catch (err) {
+            console.error("Delete error:", err);
+            toast.error(err.message);
+        }
+    };
+
     const addReply = async (commentId, content) => {
         if (!content.trim()) return toast.error("Reply cannot be empty");
 
@@ -125,6 +152,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
         addComment,
         addReply,
         toggleLike,
+        deleteComment,
     };
 };
 

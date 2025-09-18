@@ -12,48 +12,91 @@ export const searchQuery = async (req, res) => {
 
     try {
         const words = query.trim().split(/\s+/);
-        const regexes = words.map(word => new RegExp(word, 'i'));
+        const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regexes = words.map(word => new RegExp(escapeRegex(word), 'i'));
 
-        const seriesMatches = await SeriesModel.find({
-            $or: regexes.map(r => ({ seriesName: r }))
+        const uniqueById = (arr) => {
+            const map = new Map();
+            arr.forEach(item => map.set(item._id.toString(), item));
+            return Array.from(map.values());
+        };
+
+        const directSeriesMatches = await SeriesModel.find({
+            $or: [
+                ...regexes.map(r => ({ seriesName: r })),
+                ...regexes.map(r => ({ tags: r }))
+            ]
         })
-        .populate('characters', 'name gender characterImage role')
-        .populate('category', 'slug category icon');
+        .select('_id seriesName originalLanguage genre tags coverImage characters')
+        .lean();
 
-        const [characterMatches, categoryMatches, userMatches] = await Promise.all([
-            CharacterModel.find({ $or: regexes.map(r => ({ name: r })) })
-                .populate('seriesName', 'seriesName coverImage category')
-                .populate('category', 'slug category icon'),
+        const directCharacterMatches = await CharacterModel.find({
+            $or: [
+                ...regexes.map(r => ({ name: r })),
+                ...regexes.map(r => ({ tags: r }))
+            ]
+        })
+        .select('_id name gender characterImage species role seriesName tags')
+        .lean();
 
-            CategoryModel.find({ $or: regexes.map(r => ({ category: r })) })
-                .populate('seriesNames', '_id seriesName originalLanguage genre tags coverImage characters'),
+        const characterIdsFromSeries = directSeriesMatches.flatMap(series =>
+            Array.isArray(series.characters) ? series.characters.map(id => id.toString()) : []
+        );
 
-            UserModel.find({ $or: regexes.map(r => ({ username: r })) })
-        ]);
+        const existingCharacterIds = new Set(directCharacterMatches.map(c => c._id.toString()));
 
-        const seriesIds = seriesMatches.map(s => s._id);
-        const categoryIds = categoryMatches.map(c => c._id);
+        const additionalCharacters = await CharacterModel.find({
+            _id: {
+                $in: characterIdsFromSeries.filter(id => !existingCharacterIds.has(id))
+            }
+        })
+        .select('_id name gender characterImage species role seriesName tags')
+        .lean();
 
-        const [relatedCharactersBySeries, relatedCharactersByCategory] = await Promise.all([
-            CharacterModel.find({ seriesName: { $in: seriesIds } })
-                .populate('seriesName', 'seriesName coverImage category'),
+        const allCharacters = uniqueById([...directCharacterMatches, ...additionalCharacters]);
 
-            CharacterModel.find({ category: { $in: categoryIds } })
-                .populate('category', 'slug category icon')
-        ]);
+        const matchedCategories = await CategoryModel.find({
+            $or: regexes.map(r => ({ categoryName: r }))
+        })
+        .populate({
+            path: "seriesNames",
+            select: "_id seriesName originalLanguage genre tags coverImage characters",
+            populate: {
+                path: "characters",
+                select: "_id name gender characterImage species role seriesName tags"
+            }
+        })
+        .lean();
 
-        // Optional: De-duplicate character lists if needed
-        // const uniqueCharacters = [...new Map(characterMatches.map(c => [c._id.toString(), c])).values()];
-        // const uniqueRelatedBySeries = [...new Map(relatedCharactersBySeries.map(c => [c._id.toString(), c])).values()];
-        // const uniqueRelatedByCategory = [...new Map(relatedCharactersByCategory.map(c => [c._id.toString(), c])).values()];
+        let categorySeries = [];
+        let categoryCharacters = [];
+
+        matchedCategories.forEach(cat => {
+            if (Array.isArray(cat.seriesNames)) {
+                cat.seriesNames.forEach(series => {
+                    categorySeries.push(series);
+                    if (Array.isArray(series.characters)) {
+                        categoryCharacters.push(...series.characters);
+                    }
+                });
+                cat.seriesNames = [];
+            }
+        });
+
+        categoryCharacters = uniqueById(categoryCharacters);
+
+        const finalSeries = uniqueById([...directSeriesMatches, ...categorySeries]);
+        const finalCharacters = uniqueById([...allCharacters, ...categoryCharacters]);
+
+        const userMatches = await UserModel.find({
+            $or: regexes.map(r => ({ username: r }))
+        }).lean();
 
         res.json({
-                series: seriesMatches,
-                characters: characterMatches,
-                categories: categoryMatches,
-                users: userMatches,
-                charactersBySeries: relatedCharactersBySeries,
-                charactersByCategory: relatedCharactersByCategory
+            series: finalSeries,
+            characters: finalCharacters,
+            categories: matchedCategories,
+            users: userMatches
         });
     } catch (error) {
         console.error('Search error:', error);

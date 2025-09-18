@@ -22,6 +22,7 @@ export const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpExpiresTime = Date.now() + 10 * 60 * 1000;
+        const expireAt = new Date(Date.now() + 15 * 60 * 1000);
 
         const newUser = new UserModel({
             username,
@@ -30,6 +31,7 @@ export const registerUser = async (req, res) => {
             isVerified : false,
             otp,
             otpExpires : otpExpiresTime,
+            expireAt,
         });
 
         await newUser.save();
@@ -67,6 +69,7 @@ export const OTPVerification = async (req, res) => {
         user.isVerified = true;
         user.otp = undefined;
         user.otpExpires = undefined;
+        user.expireAt = undefined;
         await user.save();
 
         res.status(200).json({ message : 'User verified successfully' });
@@ -87,6 +90,7 @@ export const ResendOTP = async (req, res) => {
         const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
         user.otp = newOtp;
         user.otpExpires = Date.now() + 10 * 60 * 1000;
+        user.expireAt = new Date(Date.now() + 15 * 60 * 1000);
         await user.save();
 
         await sendEmail({

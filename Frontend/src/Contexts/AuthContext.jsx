@@ -17,7 +17,32 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     });
-    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const verifySession = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/verify-token', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    setUser(prev => prev || { _id: data.userId });
+                } else {
+                    setUser(null);
+                }
+            } catch (err) {
+                console.error('Session verification failed:', err);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        verifySession();
+    }, []);
 
     useEffect(() => {
         try {
@@ -36,15 +61,15 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await fetch('http://localhost:5000/api/auth/logout', {
-                method : 'GET',
-                credentials : 'include',
+                method: 'GET',
+                credentials: 'include',
             });
         } catch {}
-      setUser(null);
-  };
+        setUser(null);
+    };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout   }}>
             {children}
         </AuthContext.Provider>
     );

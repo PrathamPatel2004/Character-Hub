@@ -93,3 +93,30 @@ export const addCommentLike = async (req, res) => {
         res.status(500).json({ message: "Failed to like comment" });
     }
 };
+
+export const deleteComment = async (req, res) => {
+  try {
+    const { commentId } = req.body;
+    const { id: userId } = req.user;
+
+    if (!mongoose.Types.ObjectId.isValid(commentId)) {
+      return res.status(400).json({ message: "Invalid commentId" });
+    }
+
+    const comment = await CommentModel.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (comment.commentBy.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this comment" });
+    }
+
+    await CommentModel.findByIdAndDelete(commentId);
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    res.status(500).json({ message: "Failed to delete comment" });
+  }
+};

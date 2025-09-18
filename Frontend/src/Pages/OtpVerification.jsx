@@ -166,7 +166,7 @@ const OTPVerification = () => {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="text-gray-600 mb-4">Didn't receive the code?</p>
+                        <p className="text-blue-600 mb-4">Didn't receive the code?</p>
                         {timer > 0 ? (
                             <p className="text-sm text-gray-500">Resend code in {timer} seconds</p>
                         ) : (

@@ -19,6 +19,7 @@ const UserProfile = () => {
     const [isCurrentUser, setIsCurrentUser] = useState(false);
     const [userData, setUserData] = useState(null);
     const [activeTab, setActiveTab] = useState('characters');
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -33,8 +34,13 @@ const UserProfile = () => {
                 setUserData(userObj);
             } catch (error) {
                 console.error("Error fetching user data:", error);
+            } finally {
+                setTimeout(() => {
+                    setLoadingData(false);
+                }, 300);
             }
         };
+
         fetchUserData();
         setActiveTab('characters');
     }, [id]);
@@ -42,22 +48,32 @@ const UserProfile = () => {
     const { isFollowing, toggleFollow, loading } = useFollowUser(id || '');
 
     const handleToggleFollow = async () => {
-        await toggleFollow();
+        setLoadingData(true);
+        if (!user) {
+            toast.error('You must be logged in to follow users!');
+            return setLoadingData(false);
+        }
+    
+        const success = await toggleFollow();
+    
+            if (success) {
+                setUserData((prev) => {
+                    if (!prev) return prev;
 
-        setUserData((prev) => {
-            if (!prev) return prev;
-
-            let updatedFollowers = [...(prev.followers || [])];
-
-            if (isFollowing) {
-                updatedFollowers = updatedFollowers.filter((f) => f._id !== user._id);
-            } else {    
-                updatedFollowers.push({ _id: user._id, username: user.username, profilePic: user.profilePic });
+                    let updatedFollowers = [...(prev.followers || [])];
+                    
+                    if (isFollowing) {
+                        updatedFollowers = updatedFollowers.filter((f) => f._id !== user._id);
+                    } else {    
+                        updatedFollowers.push({ _id: user._id, username: user.username, profilePic: user.profilePic });
+                    }
+                    return { ...prev, followers : updatedFollowers };
+                });
+                setTimeout(() => {
+                  setLoadingData(false);  
+                }, 300);
             }
-
-            return { ...prev, followers: updatedFollowers };
-        });
-    };
+        }
 
     useEffect(() => {
         if (user?._id === id) {
@@ -67,6 +83,14 @@ const UserProfile = () => {
         }
     }, [user, id]);
 
+    if (loadingData) {
+        return (
+            <div className='flex items-center justify-center min-h-[100dvh]'>
+                <p className="text-gray-500 text-lg">Loading user data...</p>
+            </div>
+        )
+    }
+    
     if (!userData) {
         return (
             <div className="min-h-screen flex items-center justify-center py-12 px-4">
@@ -207,89 +231,93 @@ const UserProfile = () => {
                 </div>
 
                 {activeTab === 'characters' && (
-                  <div>
-                    <div className="flex justify-between items-center mb-6">
-                      <h2 className="text-2xl font-bold text-gray-900">My Characters</h2>
-                      <Link
-                        to="/add-character"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                      >
-                        <AddIcon className="h-4 w-4" />
-                        Add New Character
-                      </Link>
-                    </div>
+                    <div>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Characters</h2>
+                            {isCurrentUser && (
+                                <Link
+                                    to="/add-character"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                >
+                                    <AddIcon className="h-4 w-4" />
+                                    Add New Character
+                                </Link>
+                            )}
+                        </div>
                 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                      {userCharacters.map((character) => (
-                        <CharacterCard key={character._id || character.id} character={character} />
-                      ))}
-                    </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                            {userCharacters.map((character) => (
+                                <CharacterCard key={character._id || character.id} character={character} />
+                            ))}
+                        </div>
                     
-                    {userCharacters.length === 0 && (
-                      <div className="text-center py-12">
-                        <img
-                            src={EmptyData}
-                            alt="Empty Data"
-                            className="mx-auto mb-4" 
-                        />
-                        <h3 className="text-xl font-medium text-gray-900 mb-2">No characters yet</h3>
-                        <p className="text-gray-600 mb-6">Start building your character collection!</p>
-                        <Link
-                          to="/add-character"
-                          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
-                        >
-                          <AddIcon className="h-5 w-5" />
-                          Add Your First Character
-                        </Link>
-                      </div>
-                    )}
-                  </div>
+                        {userCharacters.length === 0 && (
+                            <div className="text-center py-12">
+                                <img
+                                    src={EmptyData}
+                                    alt="Empty Data"
+                                    className="mx-auto mb-4" 
+                                />
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No characters yet</h3>
+                                <p className="text-gray-600 mb-6">Start building your character collection!</p>
+                                <Link
+                                    to="/add-character"
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                                >
+                                    <AddIcon className="h-5 w-5" />
+                                    Add Your First Character
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {activeTab === 'series' && (
-                  <div>
-                    <div className="flex justify-between items-center mb-6">
-                      <h2 className="text-2xl font-bold text-gray-900">My Series</h2>
-                      <Link
-                        to="/add-series"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                      >
-                        <AddIcon className="h-4 w-4" />
-                        Add New Series
-                      </Link>
-                    </div>
+                    <div>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Series</h2>
+                            {isCurrentUser && (
+                                <Link
+                                    to="/add-series"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                >
+                                    <AddIcon className="h-4 w-4" />
+                                    Add New Series
+                                </Link>
+                            )}
+                        </div>
                 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                      { userSeries.map((series) => (
-                        <SeriesCard key={series._id} series={series} />
-                      ))}
-                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {userSeries.map((series) => (
+                                <SeriesCard key={series._id} series={series} />
+                            ))}
+                        </div>
                     
-                    {userSeries.length === 0 && (
-                      <div className="text-center py-12">
-                        <img
-                            src={EmptyData}
-                            alt="Empty Data"
-                            className="mx-auto mb-4" 
-                        />
-                        <h3 className="text-xl font-medium text-gray-900 mb-2">No series yet</h3>
-                        <p className="text-gray-600 mb-6">Create your first story universe!</p>
-                        <Link
-                          to="/add-series"
-                          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
-                        >
-                          <AddIcon className="h-5 w-5" />
-                          Add Your First Series
-                        </Link>
-                      </div>
-                    )}
+                        {userSeries.length === 0 && (
+                            <div className="text-center py-12">
+                                <img
+                                    src={EmptyData}
+                                    alt="Empty Data"
+                                    className="mx-auto mb-4" 
+                                />
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No series yet</h3>
+                                <p className="text-gray-600 mb-6">Create your first story universe!</p>
+                                <Link
+                                    to="/add-series"
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                                >
+                                    <AddIcon className="h-5 w-5" />
+                                    Add Your First Series
+                                </Link>
+                            </div>
+                        )}
                   </div>
                 )}
 
                 {activeTab === 'followers' && (
                     <div>
                         <div className="flex justify-between items-center mb-6">
-                          <h2 className="text-2xl font-bold text-gray-900">Followers</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">Followers</h2>
                         </div>
                     
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -328,7 +356,7 @@ const UserProfile = () => {
                 {activeTab === 'following' && (
                     <div>
                         <div className="flex justify-between items-center mb-6">
-                          <h2 className="text-2xl font-bold text-gray-900">Followings</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">Followings</h2>
                         </div>
                     
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">

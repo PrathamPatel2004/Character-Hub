@@ -16,7 +16,7 @@ export const getAllSeries = async (req, res) => {
 export const getSeries = async (req, res) => {
     const { id } = req.params;
     try {
-        const series = await SeriesModel.findById(req.params.id).populate('category', 'slug category icon').populate('characters', 'name gender characterImage role').populate('addedBy', 'username profilePic charactersAdd followers').lean();
+        const series = await SeriesModel.findById(req.params.id).populate('category', 'slug category icon').populate('characters', 'name gender characterImage role seriesName').populate('addedBy', 'username profilePic charactersAdd followers').lean();
         res.status(200).json({ series });
     } catch (err) {
         console.error(err);

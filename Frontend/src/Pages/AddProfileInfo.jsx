@@ -4,7 +4,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import toast from 'react-hot-toast';
 import EditIcon from '@mui/icons-material/Edit';
 import CropModal from '../Components/CropModel';
-import bg from '/bg.jpg';
 import Sad from '/Sad.webp';
 import { useAuth } from '../Contexts/AuthContext';
 

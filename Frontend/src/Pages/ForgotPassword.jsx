@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import MailIcon from '@mui/icons-material/Mail';
 import toast from 'react-hot-toast';
 
@@ -91,7 +92,7 @@ const ForgotPassword = () => {
                             to="/login"
                             className="flex items-center justify-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
                         >
-                            {/* <ArrowLeft className="h-4 w-4" /> */}
+                            <KeyboardBackspaceIcon className="h-4 w-4" />
                             Back to Login
                         </Link>
                     </div>

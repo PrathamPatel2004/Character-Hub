@@ -15,9 +15,7 @@ const useFollowUser = (followingUserId) => {
                     { method: "GET", credentials: 'include' }
                 );
 
-                if (!res.ok) {
-                    throw new Error(`Error ${res.status}`);
-                }
+                if (!res.ok) throw new Error(`Error ${res.status}`);
 
                 const data = await res.json();
                 setIsFollowing(data.isFollowing);
@@ -31,7 +29,7 @@ const useFollowUser = (followingUserId) => {
     }, [followingUserId]);
 
     const toggleFollow = async () => {
-        if (!followingUserId) return;
+        if (!followingUserId) return false;
 
         try {
             setLoading(true);
@@ -40,16 +38,19 @@ const useFollowUser = (followingUserId) => {
                 ? `http://localhost:5000/api/auth/unfollow/${followingUserId}`
                 : `http://localhost:5000/api/auth/follow/${followingUserId}`;
 
-            const res = await fetch(url, { method : isFollowing ? 'DELETE' : 'POST', credentials: 'include' });
+            const res = await fetch(url, {
+                method: isFollowing ? 'DELETE' : 'POST',
+                credentials: 'include'
+            });
 
-            if (!res.ok) {
-                throw new Error(`Error ${res.status}`);
-            }
+            if (!res.ok) throw new Error(`Error ${res.status}`);
 
             setIsFollowing(!isFollowing);
+            return true;
         } catch (err) {
             console.error(err);
             toast.error('Error toggling follow status.');
+            return false;
         } finally {
             setLoading(false);
         }

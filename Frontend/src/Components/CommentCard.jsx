@@ -3,9 +3,10 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import SendIcon from '@mui/icons-material/Send';
 import ReplyIcon from '@mui/icons-material/Reply';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from "../Contexts/AuthContext";
 
-const CommentCard = ({ comment, onReply, onLike }) => {
+const CommentCard = ({ comment, onReply, onLike, onDelete }) => {
     const [replyText, setReplyText] = useState("");
     const [showReplyBox, setShowReplyBox] = useState(false);
     const [showAllReplies, setShowAllReplies] = useState(false);
@@ -37,7 +38,17 @@ const CommentCard = ({ comment, onReply, onLike }) => {
                     </div>
                 </div>
 
-                <h5 className="px-10 text-sm">{comment.content}</h5>
+                <div className="flex justify-between items-center w-full">
+                    <h5 className="text-sm text-gray-800 px-10">{comment.content}</h5>
+                    {user?._id === comment.commentBy?._id && (
+                        <button
+                        onClick={() => onDelete(comment._id)}
+                        className="text-right"
+                        >
+                            <DeleteIcon className="text-gray-500 hover:text-red-600 h-4 w-4" />
+                        </button>
+                    )}
+                </div>
 
                 <div className="flex gap-2 items-center px-10 mt-1">
                     <button

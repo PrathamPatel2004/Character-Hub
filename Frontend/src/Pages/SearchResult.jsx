@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import CharacterCard from '../Components/CharacterCard';
 import SeriesCard from '../Components/SeriesCard';
 import AddIcon from '@mui/icons-material/Add';
+import Sad from '/Sad.webp';
 
 const SearchResults = () => {
     const [activeTab, setActiveTab] = useState(null);
@@ -29,7 +30,16 @@ const SearchResults = () => {
         }
     }, [results]);
 
-    if (!results) return <div className="text-center py-12">No results found.</div>;
+    if (
+        !results || (!results.characters?.length &&
+        !results.charactersFromSeries?.length &&
+        !results.characterFromCategory?.length &&
+        !results.series?.length &&
+        !results.categories?.length &&
+        !results.users?.length)
+    ) {
+        return <div className="text-center py-12">No results found.</div>;
+    }
 
     const allCharacters = [
         ...(results.characters || []),
@@ -179,7 +189,7 @@ const SearchResults = () => {
                                             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 to-purple-600/0 group-hover:from-blue-600/5 group-hover:to-purple-600/5 transition-all duration-300" />
                                         </div>
                                     </Link>
-                                ))}
+                                ))}   
                             </div>
                         ) : (
                             <div className="text-center py-12">
@@ -202,9 +212,9 @@ const SearchResults = () => {
                                     >
                                         <div className='grid grid-rows-1 flex justify-center items-center gap-3 hover:scale-105 transition-all'>
                                             <img
-                                                src={user.profilePic}
+                                                src={user.profilePic || Sad}
                                                 alt={user.username}
-                                                className='w-30 h-30 items-center border rounded-full'
+                                                className="w-20 h-20 object-cover border rounded-full"
                                             />
                                             <h3 className="font-bold text-gray-900 mb-2">{user.username}</h3>
                                         </div>

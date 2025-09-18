@@ -268,14 +268,14 @@ const AddCharacter = () => {
                         <p className="text-blue-100 mt-2">Share your favorite character with the community</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-8 space-y-8">
+                    <form onSubmit={handleSubmit} className="p-8 space-y-8" disabled={loading}>
                         <div className="flex flex-col items-center gap-4">
                             <div className="relative">
                                 {characterImage && (
                                     <img
                                         src={characterImage}
                                         alt="Cover Image Preview"
-                                        className="w-50 h-50 max-h-75 object-contain border rounded-lg shadow-md"
+                                        className="w-50 h-50 object-contain border rounded-lg shadow-md"
                                     />
                                 )}
                                 <label htmlFor="characterImageInput" className="absolute bottom-0 right-0 bg-transparent p-2 rounded-full cursor-pointer shadow-lg" title="Select Character Image" >
@@ -536,7 +536,6 @@ const AddCharacter = () => {
                         <div className="flex justify-end pt-6">
                             <button
                                 type="submit"
-                                disabled={loading}
                                 className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                             >
                                 {loading ? 'Adding Character...' : 'Add Character'}

@@ -1,49 +1,62 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
-export default function UserCard({ user }) {
-  const { user: currentUser } = useContext(AuthContext);
-  const [isFollowing, setIsFollowing] = useState(
-    currentUser?.following?.some((f) => f._id === user._id)
-  );
+const useFollowUser = (followingUserId) => {
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  const handleFollow = async () => {
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/users/${user._id}/follow`,
-        {
-          method: "POST",
-          credentials: "include",
+    useEffect(() => {
+        const followStatus = async () => {
+            if (!followingUserId) return;
+
+            try {
+                const res = await fetch(
+                    `http://localhost:5000/api/auth/follow-status/${followingUserId}`,
+                    { method: "GET", credentials: 'include' }
+                );
+
+                if (!res.ok) throw new Error(`Error ${res.status}`);
+
+                const data = await res.json();
+                setIsFollowing(data.isFollowing);
+            } catch (err) {
+                console.error(err);
+                toast.error('Could not fetch follow status.');
+            }
+        };
+
+        followStatus();
+    }, [followingUserId]);
+
+    const toggleFollow = async () => {
+        if (!followingUserId) return false;
+
+        try {
+            setLoading(true);
+
+            const url = isFollowing
+                ? `http://localhost:5000/api/auth/unfollow/${followingUserId}`
+                : `http://localhost:5000/api/auth/follow/${followingUserId}`;
+
+            const res = await fetch(url, {
+                method: isFollowing ? 'DELETE' : 'POST',
+                credentials: 'include'
+            });
+
+            if (!res.ok) throw new Error(`Error ${res.status}`);
+
+            setIsFollowing(!isFollowing);
+            return true;
+        } catch (err) {
+            console.error(err);
+            toast.error('Error toggling follow status.');
+            return false;
+        } finally {
+            setLoading(false);
         }
-      );
-      if (res.ok) {
-        setIsFollowing((prev) => !prev);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    };
 
-  return (
-    <div className="flex items-center justify-between p-3 border rounded-lg">
-      <div className="flex items-center gap-3">
-        <img
-          src={user.profilePic || "/default-avatar.png"}
-          alt={user.username}
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <span>{user.username}</span>
-      </div>
-      {currentUser?._id !== user._id && (
-        <button
-          onClick={handleFollow}
-          className={`px-3 py-1 rounded-lg text-sm ${
-            isFollowing ? "bg-gray-300" : "bg-blue-500 text-white"
-          }`}
-        >
-          {isFollowing ? "Unfollow" : "Follow"}
-        </button>
-      )}
-    </div>
-  );
-}
+    return { isFollowing, toggleFollow, loading };
+};
+
+export default useFollowUser;

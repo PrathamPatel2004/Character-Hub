@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     isFirstLogin : { type : Boolean, default : true },
     followers : [{ type : mongoose.Schema.Types.ObjectId, ref : 'User' }],
     following : [{ type : mongoose.Schema.Types.ObjectId, ref : 'User' }],
+    expireAt: {
+        type: Date,
+        default: null,
+        index: { expireAfterSeconds: 0 },
+    },
 }, { timestamps : true });
 
 const UserModel = mongoose.model("User", userSchema);

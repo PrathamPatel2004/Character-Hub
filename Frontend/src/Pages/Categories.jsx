@@ -36,6 +36,7 @@ const Categories = () => {
     const initialCategory = searchParams.get('category') || 'all';
     const [selectedCategory, setSelectedCategory] = useState(initialCategory);
     const [viewMode, setViewMode] = useState('grid');
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,6 +76,8 @@ const Categories = () => {
             } catch (err) {
                 console.error('Failed to load data', err);
                 toast.error('Failed to load data');
+            } finally {
+                setLoadingData(false);
             }
         };
         fetchData();
@@ -110,6 +113,10 @@ const Categories = () => {
             ? series
             : series.filter((s) => s.category?.slug?.toLowerCase() === selectedCategory.toLowerCase())
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    if (loadingData) {
+        return null;
+    }
 
     return (
         <div className="min-h-screen py-8">
@@ -174,7 +181,7 @@ const Categories = () => {
                         viewMode === 'grid' ? (
                             <>
                                 <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                                     {filteredCharacters.map((character) => (
                                         <CharacterCard key={character._id} character={character} />
                                     ))}

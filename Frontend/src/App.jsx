@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './Contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
@@ -22,6 +22,36 @@ import SearchResults from './Pages/SearchResult';
 import './App.css'
 
 function App() {
+    const [loadingData, setLoadingData] = useState(true);
+    const [showLoader, setShowLoader] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setLoadingData(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (!loadingData) {
+            const timeout = setTimeout(() => setShowLoader(false), 400);
+            return () => clearTimeout(timeout);
+        }
+    }, [loadingData]);
+
+    if (showLoader) {
+        return (
+            <div
+                className={`min-h-screen flex justify-center items-center transition-opacity duration-500 ${
+                    loadingData ? "opacity-100" : "opacity-0"
+                }`}
+            >
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-gray-600 font-medium">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     return(
         <AuthProvider>
             <Router>
@@ -52,4 +82,4 @@ function App() {
     )
 }
 
-export default App
+export default App;

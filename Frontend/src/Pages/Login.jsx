@@ -22,36 +22,34 @@ const Login = () => {
     };
 
     const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+        e.preventDefault();
+        setLoading(true);
 
-  try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(formData),
-    });
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(formData),
+            }); 
 
-    const data = await res.json();
+            const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || 'Login failed');
+            if (!res.ok) throw new Error(data.message || 'Login failed');
 
-    login(data.user);
+            login(data.user);
+            toast.success('Login successful!');
 
-    toast.success('Login successful!');
-
-    if (data.user.isFirstLogin) {
-      navigate(`/add-profile-info/${data.user._id}`);
-    } else {
-      navigate('/');
-    }
-  } catch (error) {
-    toast.error(error.message || 'Login failed');
-  } finally {
-    setLoading(false);
-  }
-
+            if (data.user.isFirstLogin) {
+                navigate(`/add-profile-info/${data.user._id}`);
+            } else {
+                navigate('/');
+            }
+        } catch (error) {
+            toast.error(error.message || 'Login failed');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

@@ -40,13 +40,13 @@ const AddSeries = () => {
     const handleInputChange = e => {
     const { name, value } = e.target;
 
-    console.log(`Changed field: ${name}, Value: ${value}`); // 👈 Add this
+    console.log(`Changed field: ${name}, Value: ${value}`);
 
     if (name === "category") {
         const selectedCategory = categoriesList.find(cat => cat._id === value);
         setFormData(prev => ({
             ...prev,
-            category: value, // Must be ObjectId string
+            category: value,
             categoryName: selectedCategory?.category || "",
         }));
     } else {
@@ -133,7 +133,7 @@ const AddSeries = () => {
     
     const uploadToCloud = async (file, single = true) => {
         const formData = new FormData();
-        console.log('User in AddNewSeries :', user);
+        console.log('User in Add-Series :', user);
         if (single) {
             formData.append('singleImage', file);
             const res = await fetch('http://localhost:5000/api/upload/uploadFile', { method: 'POST', body: formData, credentials: 'include' });
@@ -289,7 +289,7 @@ const AddSeries = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Series Status *</label>
                                 <select
-                                    name="status"  // ✅ MUST be 'status', not 'category'
+                                    name="status"
                                     required
                                     value={formData.status}
                                     onChange={handleInputChange}

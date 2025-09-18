@@ -18,9 +18,10 @@ const SeriesPage = () => {
     const [multipleSeries, setMultipleSeries] = useState([]);
     const [series, setSeries] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const { comments, loading: loadingComments, addComment, addReply, toggleLike } = useComments({ characterId: id });
+    const { comments, loading: loadingComments, addComment, addReply, toggleLike, deleteComment } = useComments({ characterId: id });
     const [commentText, setCommentText] = useState("");
     const [sortBy, setSortBy] = useState("recent");
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,6 +47,10 @@ const SeriesPage = () => {
             } catch (err) {
                 console.error('Failed to load data', err);
                 toast.error('Failed to load data');
+            } finally {
+                setTimeout(() => {
+                    setLoadingData(false);
+                }, 300);
             }
         };
         fetchData();
@@ -75,11 +80,44 @@ const SeriesPage = () => {
         if (newComment) setCommentText("");
     };
 
+    const handleFollow = async () => {
+        setLoadingData(true);
+        if (!user) {
+            toast.error('You must be logged in to follow users!');
+            return setLoadingData(false);
+        }
+
+        const success = await toggleFollow();
+
+        if (success) {
+            setSeries((prev) => {
+                if (!prev) return prev;
+
+                const isCurrentlyFollowing = isFollowing;
+                const updatedFollowers = isCurrentlyFollowing
+                    ? prev.addedBy.followers.filter((id) => id !== user._id)
+                    : [...prev.addedBy.followers, user._id];
+
+                return {
+                    ...prev,
+                    addedBy: {
+                        ...prev.addedBy,
+                        followers: updatedFollowers
+                    }
+                };
+            });
+
+            setTimeout(() => {
+                setLoadingData(false);
+            }, 300);
+        }
+    }
+
     const sameAuthorSeries = (multipleSeries || [])
         .filter((s) => s.addedBy?._id === series?.addedBy?._id && s._id !== series?._id).slice(0, 4);
 
     const similarSeries = (multipleSeries || [])
-        .filter((s) => s.tags?.some((tag) => series?.tags?.includes(tag)) && s._id !== series?._id).slice(0, 8)
+        .filter((s) => s.tags?.some((tag) => series?.tags?.includes(tag)) && s._id !== series?._id).slice(0, 4)
 
     const sortedComments = [...comments].sort((a, b) => {
         if (sortBy === "liked") {
@@ -88,34 +126,38 @@ const SeriesPage = () => {
         return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
-    
+    if (loadingData) {
+        return (
+            <div className="flex items-center justify-center min-h-[100dvh]">
+                <p className="text-gray-500 text-lg">Loading series data...</p>
+            </div>
+        )
+    }
+
     if (!series) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading series...</p>
-                </div>
+            <div className="flex items-center justify-center min-h-[100vh]">
+                <p className="text-gray-500 text-lg">Series not found</p>
             </div>
         );
     }
 
     return (
         <div className="min-h-screen">
-            <div className="relative h-auto max-h-100 overflow-hidden p-3 mt-5 h-auto">
+            <div className="relative overflow-hidden m-4 aspect-[5/2]">
                 <img
                     src={series.coverImage}
                     alt={`${series.seriesName} Cover`}
-                    className="w-full h-auto min-h-60 max-h-100 object-cover rounded-lg"
+                    className="object-contain w-full h-full rounded-lg"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-32 relative z-10">
+            <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-50 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8 pb-16">
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                           <h1 className="text-3xl font-bold text-gray-900 mb-2">{series.seriesName}</h1>
+                           <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">{series.seriesName}</h1>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
                                 <div className="text-center p-4 bg-orange-50 rounded-lg gap-4">
                                     <div className="text-sm text-gray-800 font-medium">Category</div>
@@ -211,8 +253,8 @@ const SeriesPage = () => {
                             </div>
                             <div className="mt-12">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Some Characters from series</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                                    {series.characters?.slice(0, 3).map((char) => (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {series.characters?.slice(0, 4).map((char) => (
                                         <CharacterCard key={char._id} character={char} />
                                     ))}
                                 </div>
@@ -319,6 +361,7 @@ const SeriesPage = () => {
                                             comment={comment}
                                             onReply={addReply}
                                             onLike={toggleLike}
+                                            onDelete={deleteComment}
                                         />
                                     ))}
                                 </div>
@@ -329,31 +372,31 @@ const SeriesPage = () => {
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white rounded-2xl shadow-lg p-6">
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Added by</h3>
-                            <div className="flex items-center justify-center gap-10">
+                            <div className="flex flex-col items-center justify-center sm:flex-row lg:flex-col sm:gap-10 lg:gap-4 px-5 gap-4">
                                 <img
                                     src={series.addedBy?.profilePic || Not_Found_Icon }
                                     alt={series.addedBy?.username}
                                     className="w-25 h-25 rounded-full object-cover border border-blue-600 flex-shrink-0"
                                 />
                                 {addedById == user?._id ? (
-                                    <div>
-                                        <Link to='/profile'>
+                                    <div className='flex flex-col items-center justify-center'>
+                                        <Link to={`/user/${series.addedBy?._id}`}>
                                             <h3 className="font-medium text-gray-900 text-xl mb-1">
                                                 {series.addedBy?.username || series.addedBy}
                                             </h3>
                                         </Link>
-                                        <h5 className='font-small text-gray-500 text-lg mb-2'>
-                                            Followers : {series.addedBy?.followers?.length}
+                                        <h5 className='font-small text-gray-700 text-lg mb-2'>
+                                            {series.addedBy?.followers?.length} Followers
                                         </h5>
                                         <Link
-                                            to="/add-profile-info"
-                                            className="flex items-center gap-2 px-4 py-1.5 rounded-sm button text-white bg-blue-700"
+                                            to={`/add-profile-info/${id}`}
+                                            className="items-center px-5 py-1.5 rounded-sm button text-white bg-blue-700"
                                         >
                                             Edit Profile
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div>
+                                    <div className='flex flex-col items-center justify-center'>
                                         <Link to={`/user/${addedById}`}>
                                             <h3 className="font-medium text-gray-900 text-xl mb-1">
                                                 {series.addedBy?.username || series.addedBy}
@@ -363,21 +406,14 @@ const SeriesPage = () => {
                                             Followers : {series.addedBy?.followers?.length}
                                         </h5>
                                         <button
-                                            onClick={() => {
-                                                if (!user) {
-                                                    toast.error('You must be logged in to follow users!');
-                                                    return;
-                                                }
-                                                toggleFollow();
-                                            }}
+                                            onClick={handleFollow}
                                             disabled={loading}
                                             className={`flex items-center gap-2 px-4 py-1.5 rounded-sm transition-colors ${
                                                 isFollowing
                                                     ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                                     : 'bg-blue-600 text-white hover:bg-blue-700'
                                             }`}
-                                        >
-                                            <AddIcon /> 
+                                        > 
                                             {loading ? 'Processing...' : isFollowing ? 'Unfollow' : 'Follow'}
                                         </button>
                                     </div>
@@ -392,11 +428,21 @@ const SeriesPage = () => {
                                 </h2>
                                 <div className="space-y-7.5">
                                     {similarSeries?.map((srs) => (
-                                        <Link key={srs._id} to={`/series/${srs._id}`} className="flex gap-10 items-center justify-center lg:justify-start lg:gap-4">
+                                        <Link key={srs._id} to={`/series/${srs._id}`} className="flex gap-10 justify-start lg:gap-4">
                                             <img src={srs.coverImage} alt={srs.seriesName} className="w-35 h-20 rounded-lg object-cover" />
                                             <div>
                                                 <p className="text-sm font-medium">{srs.seriesName}</p>
                                                 <p className="text-xs text-gray-500">{srs.category?.category}</p>
+                                                <div className='flex flex-wrap gap-1.5 mb-3 py-2'>
+                                                    {srs.tags?.slice(0, 3).map((tag, index) => (
+                                                        <span
+                                                            key={tag + index}
+                                                            className='bg-blue-600 text-white px-2 py-1 rounded-sm text-xs'
+                                                        >
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </Link>
                                     ))}
@@ -411,11 +457,21 @@ const SeriesPage = () => {
                                 </h2>
                                 <div className="space-y-7.5">
                                     {sameAuthorSeries?.map((srs) => (
-                                        <Link key={srs._id} to={`/series/${srs._id}`} className="flex gap-10 items-center justify-center lg:justify-start lg:gap-4">
+                                        <Link key={srs._id} to={`/series/${srs._id}`} className="flex gap-10 justify-start lg:gap-4">
                                             <img src={srs.coverImage} alt={srs.seriesName} className="w-35 h-20 rounded-lg object-cover" />
                                             <div>
                                                 <p className="text-sm font-medium">{srs.seriesName}</p>
                                                 <p className="text-xs text-gray-500">{srs.category?.category}</p>
+                                                <div className='flex flex-wrap gap-1.5 mb-3 py-2'>
+                                                    {srs.tags?.slice(0, 3).map((tag, index) => (
+                                                        <span
+                                                            key={tag + index}
+                                                            className='bg-blue-600 text-white px-2 py-1 rounded-sm text-xs'
+                                                        >
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </Link>
                                     ))}
