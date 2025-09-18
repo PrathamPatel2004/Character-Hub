@@ -24,7 +24,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`https://character-hub.onrender.com/api/auth/get-user-info/${id}`, {
                     method: "GET",
                     credentials: "include",
                 });

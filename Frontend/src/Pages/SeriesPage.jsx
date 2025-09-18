@@ -27,8 +27,8 @@ const SeriesPage = () => {
         const fetchData = async () => {
             try {
                 const [seriesDataRes, allSeriesDataRes] = await Promise.all([
-                    fetch(`http://localhost:5000/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
-                    fetch('http://localhost:5000/api/series/all-series', { method: 'GET', credentials: 'include' }),
+                    fetch(`https://character-hub.onrender.com/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
+                    fetch('https://character-hub.onrender.com/api/series/all-series', { method: 'GET', credentials: 'include' }),
                 ]);
   
                 if (seriesDataRes.ok) {

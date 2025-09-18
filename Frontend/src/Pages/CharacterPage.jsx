@@ -27,8 +27,8 @@ const CharacterPage = () => {
         const fetchData = async () => {
             try {
                 const [characterDataRes, charactersRes] = await Promise.all([
-                    fetch(`http://localhost:5000/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
-                    fetch('http://localhost:5000/api/characters/all-characters', { method : 'GET', credentials : 'include' }),
+                    fetch(`https://character-hub.onrender.com/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
+                    fetch('https://character-hub.onrender.com/api/characters/all-characters', { method : 'GET', credentials : 'include' }),
                 ]);
 
                 if (characterDataRes.ok) {

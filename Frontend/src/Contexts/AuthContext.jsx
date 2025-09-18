@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const verifySession = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/auth/verify-token', {
+                const res = await fetch('https://character-hub.onrender.com/api/auth/verify-token', {
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch('http://localhost:5000/api/auth/logout', {
+            await fetch('https://character-hub.onrender.com/api/auth/logout', {
                 method: 'GET',
                 credentials: 'include',
             });

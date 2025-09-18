@@ -22,7 +22,7 @@ const Navbar = () => {
     useEffect(() => {
         const fetchProfileInfo = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`https://character-hub.onrender.com/api/auth/get-user-info/${id}`, {
                     method : 'GET',
                     credentials : 'include'
                 });
@@ -52,7 +52,7 @@ const Navbar = () => {
     e.preventDefault();
 
     try {
-        const res = await fetch(`http://localhost:5000/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
+        const res = await fetch(`https://character-hub.onrender.com/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
             method: 'GET',
             credentials: 'include',
         });

@@ -14,8 +14,8 @@ const useComments = ({ seriesId, characterId } = {}) => {
             try {
                 setLoadingComments(true);
                 const url = characterId
-                    ? `http://localhost:5000/api/comments/character/${characterId}`
-                    : `http://localhost:5000/api/comments/series/${seriesId}`;
+                    ? `https://character-hub.onrender.com/api/comments/character/${characterId}`
+                    : `https://character-hub.onrender.com/api/comments/series/${seriesId}`;
 
                 const res = await fetch(url);
                 if (!res.ok) throw new Error("Failed to load comments");
@@ -35,7 +35,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
         if (!content.trim()) return toast.error("Comment cannot be empty");
 
         try {
-            const res = await fetch("http://localhost:5000/api/comments/add-comment", {
+            const res = await fetch("https://character-hub.onrender.com/api/comments/add-comment", {
                 method : "POST",
                 credentials : "include",
                 headers: { "Content-Type": "application/json" },
@@ -58,7 +58,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
 
     const deleteComment = async (commentId) => {
         try {
-            const res = await fetch("http://localhost:5000/api/comments/delete-comment", {
+            const res = await fetch("https://character-hub.onrender.com/api/comments/delete-comment", {
                 method: "DELETE",
                 credentials: "include",
                 headers: {
@@ -87,7 +87,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
         if (!content.trim()) return toast.error("Reply cannot be empty");
 
         try {
-            const res = await fetch("http://localhost:5000/api/comments/reply-comment", {
+            const res = await fetch("https://character-hub.onrender.com/api/comments/reply-comment", {
                 method : "POST",
                 credentials : "include",
                 headers: { "Content-Type": "application/json" },
@@ -125,7 +125,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
                 )
             );
 
-            const res = await fetch("http://localhost:5000/api/comments/like-comment", {
+            const res = await fetch("https://character-hub.onrender.com/api/comments/like-comment", {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
