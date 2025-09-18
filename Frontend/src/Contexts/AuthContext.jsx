@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const verifySession = async () => {
