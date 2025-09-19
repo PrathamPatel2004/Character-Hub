@@ -289,11 +289,12 @@ export const verifyAccessToken = (req, res) => {
 };
 
 export const logoutUser = (req, res) => {
-  res.clearCookie('accesstoken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Lax',
-  });
+    res.clearCookie('accesstoken', accesstoken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      path: '/',
+    });
   res.status(200).json({ message: 'Logged out' });
 };
 
