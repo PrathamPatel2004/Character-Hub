@@ -63,5 +63,3 @@ connectDB().then(() => {
     console.log("✅ Server is running on PORT", PORT);
   });
 });
-
-})
