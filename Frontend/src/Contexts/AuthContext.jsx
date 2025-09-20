@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const verifySession = async () => {
             try {
-                const res = await fetch('https://character-hub.onrender.com/api/auth/verify-token', {
+                const res = await fetch('https://character-hub.onrender.com/api/auth/verify-access-token', {
                     method: 'GET',
                     credentials: 'include',
                 });
