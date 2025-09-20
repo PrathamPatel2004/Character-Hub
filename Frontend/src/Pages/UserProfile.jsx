@@ -102,6 +102,18 @@ const UserProfile = () => {
         );
     }
 
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center py-12 px-4">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Login Required</h2>
+                    <p className="text-gray-600 mb-6">You need to be logged in to add a character.</p>
+                    <button onClick={() => navigate('/login')} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">Go to Login</button>
+                </div>
+            </div>
+        );
+    }
+
     const userCharacters = userData?.charactersAdd || [];
     const userSeries = userData?.seriesAdd || [];
     const followers = userData?.followers || [];
