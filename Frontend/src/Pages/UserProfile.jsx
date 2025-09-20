@@ -27,6 +27,9 @@ const UserProfile = () => {
                 const res = await fetch(`https://character-hub.onrender.com/api/auth/get-user-info/${id}`, {
                     method: "GET",
                     credentials: "include",
+                    headers: {
+                       'Authorization': 'Bearer YOUR_ACCESS_TOKEN_HERE'
+                    }
                 });
 
                 const data = await res.json();
