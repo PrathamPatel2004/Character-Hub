@@ -11,7 +11,7 @@ const useFollowUser = (followingUserId) => {
 
             try {
                 const res = await fetch(
-                    `http://localhost:5000/api/auth/follow-status/${followingUserId}`,
+                    `https://character-hub.onrender.com/api/auth/follow-status/${followingUserId}`,
                     { method: "GET", credentials: 'include' }
                 );
 
@@ -35,8 +35,8 @@ const useFollowUser = (followingUserId) => {
             setLoading(true);
 
             const url = isFollowing
-                ? `http://localhost:5000/api/auth/unfollow/${followingUserId}`
-                : `http://localhost:5000/api/auth/follow/${followingUserId}`;
+                ? `https://character-hub.onrender.com/api/auth/unfollow/${followingUserId}`
+                : `https://character-hub.onrender.com/api/auth/follow/${followingUserId}`;
 
             const res = await fetch(url, {
                 method: isFollowing ? 'DELETE' : 'POST',
