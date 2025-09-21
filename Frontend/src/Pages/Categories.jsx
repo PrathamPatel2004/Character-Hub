@@ -281,9 +281,16 @@ const Categories = () => {
                 )}
 
                 {filteredCharacters.length === 0 && filteredSeries.length === 0 && (
-                    <div className="flex flex-col items-center mt-8 justify-center">
-                        <img src={Not_Found_Icon} alt="No Results" className="w-32 h-32 mx-auto mt-8" />
-                        <p className="text-gray-600 text-center mt-4">No results found.</p>
+                    <div className="text-center py-12">
+                        <div className="mb-5 flex justify-center items-center">
+                            <img
+                                src={Not_Found_Icon}
+                                alt="Not Found"
+                                className="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[15%] h-auto"
+                            />
+                        </div>
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No results found.</h3>
+                        <p className="text-gray-600">Try selecting a different category.</p>
                     </div>
                 )}
             </div>
