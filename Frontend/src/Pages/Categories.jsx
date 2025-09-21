@@ -120,7 +120,7 @@ const Categories = () => {
             : series.filter((s) => s.category?.slug?.toLowerCase() === selectedCategory.toLowerCase())
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    return (
+        return (
         <div className="min-h-screen py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
@@ -174,18 +174,17 @@ const Categories = () => {
                 </div>
 
                 <div className="mb-6">
-                    <div className="mb-6">
                     {loadingData === true ? (
                         <div className="flex items-center justify-center min-h-[50vh]">
                             <p className="text-gray-500 text-lg">Loading Data...</p>
                         </div>
-                    ) : (
+                    ) : ( 
                         <>
                             <p className="text-gray-600 mb-2">
                                 Showing {filteredCharacters.length} Characters{filteredCharacters.length !== 1 } & {filteredSeries.length} Series{filteredSeries.length !== 1 } in{' '}
                                 <strong className="capitalize">{selectedCategoryName}</strong>
                             </p>
-        
+
                             {filteredCharacters.length > 0 && (
                                 viewMode === 'grid' ? (
                                     <>
@@ -236,9 +235,9 @@ const Categories = () => {
                                         ))}
                                     </div>
                                 )
-                            )}
+                            )} 
                         </>
-                    )}
+                     )}
                 </div>
                 
                 {filteredSeries.length > 0 && (
