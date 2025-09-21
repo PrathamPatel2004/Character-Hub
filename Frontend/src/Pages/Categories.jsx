@@ -87,11 +87,17 @@ const Categories = () => {
         const urlCategory = searchParams.get('category') || 'all';
         if (urlCategory !== selectedCategory) {
             setSelectedCategory(urlCategory);
+            setLoadingData(true);
+
+            setTimeout(() => {
+                setLoadingData(false);
+            }, 300);
         }
     }, [searchParams, selectedCategory]);
 
     const handleCategoryChange = (slug) => {
         if (slug !== selectedCategory) {
+            setLoadingData(true);
             setSelectedCategory(slug);
             navigate(`?category=${slug}`);
         }
@@ -113,10 +119,6 @@ const Categories = () => {
             ? series
             : series.filter((s) => s.category?.slug?.toLowerCase() === selectedCategory.toLowerCase())
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    if (loadingData) {
-        return null;
-    }
 
     return (
         <div className="min-h-screen py-8">
@@ -172,62 +174,71 @@ const Categories = () => {
                 </div>
 
                 <div className="mb-6">
-                    <p className="text-gray-600 mb-2">
-                        Showing {filteredCharacters.length} Characters{filteredCharacters.length !== 1 } & {filteredSeries.length} Series{filteredSeries.length !== 1 } in{' '}
-                        <strong className="capitalize">{selectedCategoryName}</strong>
-                    </p>
-
-                    {filteredCharacters.length > 0 && (
-                        viewMode === 'grid' ? (
-                            <>
-                                <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                                    {filteredCharacters.map((character) => (
-                                        <CharacterCard key={character._id} character={character} />
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <div className="space-y-4">
-                                <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
-                                {filteredCharacters.map((character) => (
-                                    <Link
-                                        to={`/character/${character._id}`}
-                                        key={character._id}
-                                        className="block bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow"
-                                    >
-                                        <div className="flex gap-4">
-                                            <img
-                                                src={character.characterImage}
-                                                alt={character.name}
-                                                className="flex w-24 h-24 sm:w-28 sm:h-28 rounded-lg object-cover flex-shrink-0 justify-center items-center"
-                                            />
-                                        <div className="flex-1">
-                                            <div className="flex flex-wrap gap-3 mb-2 sm:mb-3 items-center">
-                                                <h3 className="text-lg sm:text-xl font-bold text-gray-900">{character.name}</h3>
-                                                <p className="text-lg sm:text-xl font-bold text-blue-500">{character.seriesName?.seriesName || character.seriesName}</p>
-                                            </div>
-                                                <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
-                                                    {character.tags?.slice(0, 3).map((tag) => (
-                                                        <span
-                                                            key={tag}
-                                                            className="bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm"
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
-                                                    <span>{character.role}</span>
-                                                    <span>{character.category?.category || character.category} Character</span>
-                                                </div>
-                                            </div>
+                    <div className="mb-6">
+                    {loadingData === true ? (
+                        <div className="flex items-center justify-center min-h-[50vh]">
+                            <p className="text-gray-500 text-lg">Loading Data...</p>
+                        </div>
+                    ) : (
+                        <>
+                            <p className="text-gray-600 mb-2">
+                                Showing {filteredCharacters.length} Characters{filteredCharacters.length !== 1 } & {filteredSeries.length} Series{filteredSeries.length !== 1 } in{' '}
+                                <strong className="capitalize">{selectedCategoryName}</strong>
+                            </p>
+        
+                            {filteredCharacters.length > 0 && (
+                                viewMode === 'grid' ? (
+                                    <>
+                                        <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                                            {filteredCharacters.map((character) => (
+                                                <CharacterCard key={character._id} character={character} />
+                                            ))}
                                         </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        )
-                    )}
+                                    </>
+                                ) : (
+                                    <div className="space-y-4">
+                                        <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
+                                        {filteredCharacters.map((character) => (
+                                            <Link
+                                                to={`/character/${character._id}`}
+                                                key={character._id}
+                                                className="block bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow"
+                                            >
+                                                <div className="flex gap-4">
+                                                    <img
+                                                        src={character.characterImage}
+                                                        alt={character.name}
+                                                        className="flex w-24 h-24 sm:w-28 sm:h-28 rounded-lg object-cover flex-shrink-0 justify-center items-center"
+                                                    />
+                                                <div className="flex-1">
+                                                    <div className="flex flex-wrap gap-3 mb-2 sm:mb-3 items-center">
+                                                        <h3 className="text-lg sm:text-xl font-bold text-gray-900">{character.name}</h3>
+                                                        <p className="text-lg sm:text-xl font-bold text-blue-500">{character.seriesName?.seriesName || character.seriesName}</p>
+                                                    </div>
+                                                        <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
+                                                            {character.tags?.slice(0, 3).map((tag) => (
+                                                                <span
+                                                                    key={tag}
+                                                                    className="bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm"
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                                                            <span>{character.role}</span>
+                                                            <span>{character.category?.category || character.category} Character</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )
+                            )}
+                        </>
+                    )
                 </div>
                 
                 {filteredSeries.length > 0 && (
