@@ -238,7 +238,7 @@ const Categories = () => {
                                 )
                             )}
                         </>
-                    )
+                    )}
                 </div>
                 
                 {filteredSeries.length > 0 && (
