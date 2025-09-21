@@ -267,14 +267,14 @@ const UserProfile = () => {
                         </div>
                     
                         {userCharacters.length === 0 && (
-                            <div className="text-center py-12">
+                            <div className='flex flex-col justify-center items-center py-8'>
                                 <img
                                     src={EmptyData}
-                                    alt="Empty Data"
-                                    className="mx-auto mb-4" 
+                                    alt='No Characters Added'
+                                    className='w-48 h-48'
                                 />
-                                <h3 className="text-xl font-medium text-gray-900 mb-2">No characters yet</h3>
-                                <p className="text-gray-600 mb-6">Start building your character collection!</p>
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No characters added yet</h3>
+                                <p className="text-gray-600 mb-6">Added your first character data!</p>
                                 <Link
                                     to="/add-character"
                                     className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
@@ -309,14 +309,14 @@ const UserProfile = () => {
                         </div>
                     
                         {userSeries.length === 0 && (
-                            <div className="text-center py-12">
+                            <div className='flex flex-col justify-center items-center py-8'>
                                 <img
                                     src={EmptyData}
-                                    alt="Empty Data"
-                                    className="mx-auto mb-4" 
+                                    alt='No Series Added'
+                                    className='w-48 h-48'
                                 />
-                                <h3 className="text-xl font-medium text-gray-900 mb-2">No series yet</h3>
-                                <p className="text-gray-600 mb-6">Create your first story universe!</p>
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No series added yet</h3>
+                                <p className="text-gray-600 mb-6">Added your first series data!</p>
                                 <Link
                                     to="/add-series"
                                     className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
@@ -356,11 +356,11 @@ const UserProfile = () => {
                         </div>
                         
                         {userData.followers?.length === 0 && (
-                            <div className="text-center py-12">
+                            <div className='flex flex-col justify-center items-center py-8'>
                                 <img
                                     src={EmptyData}
-                                    alt="Empty Data"
-                                    className="mx-auto mb-4" 
+                                    alt='No Followers'
+                                    className='w-48 h-48'
                                 />
                                 <h3 className="text-xl font-medium text-gray-900 mb-2">No followers yet</h3>
                             </div>
@@ -395,11 +395,11 @@ const UserProfile = () => {
                         </div>
                         
                         {userData.following?.length === 0 && (
-                            <div className="text-center py-12">
+                            <div className='flex flex-col justify-center items-center py-8'>
                                 <img
                                     src={EmptyData}
-                                    alt="Empty Data"
-                                    className="mx-auto mb-4" 
+                                    alt='No Followings'
+                                    className='w-48 h-48'
                                 />
                                 <h3 className="text-xl font-medium text-gray-900 mb-2">No followings yet</h3>
                             </div>
