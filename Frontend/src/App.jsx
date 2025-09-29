@@ -9,6 +9,7 @@ import Login from './Pages/Login';
 import OTPVerification from './Pages/OtpVerification'
 import ForgotPassword from './Pages/ForgotPassword';
 import ChangePassword from './Pages/ChangePassword';
+import ResetPassword from './Pages/ResetPassword';
 import AddProfileInfo from './Pages/AddProfileInfo'
 import AddCharacter from './Pages/AddCharacter';
 import AddSeries from './Pages/AddSeries';
@@ -63,6 +64,7 @@ function App() {
                         <Route path='/otp-verification' element={<OTPVerification />} />
                         <Route path='/forgot-password' element={<ForgotPassword />} />
                         <Route path='/change-password' element={<ChangePassword />} />
+                        <Route path='/reset-password/:token' element={<ResetPassword />} />
                         <Route path='/signup' element={<Signup />} />
                         <Route path='/add-character' element={<AddCharacter />} />
                         <Route path='/add-series' element={<AddSeries />} />
