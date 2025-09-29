@@ -41,8 +41,8 @@ const Series = () => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, seriesDataRes] = await Promise.all([
-                    fetch('https://character-hub.onrender.com/api/categories/all-categories', { method: 'GET', credentials: 'include' }),
-                    fetch('https://character-hub.onrender.com/api/series/all-series', { method: 'GET', credentials: 'include' }),
+                    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {
