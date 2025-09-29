@@ -12,13 +12,24 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setSent(true);
+            const res = await fetch(`http://localhost:5000/api/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                if (res.status === 400) {
+                    toast.error('Email not found');
+                } else {
+                    throw new Error(data.message || 'Failed to found email');
+                }
+            }
             toast.success('Reset link sent to your email!');
+            setSent(true);
         } catch (error) {
-            toast.error('Failed to send reset email. Please try again.');
+            toast.error(error.message || 'Failed to send reset email. Please try again.');
         } finally {
             setLoading(false);
         }
