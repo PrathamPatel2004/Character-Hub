@@ -42,9 +42,9 @@ const Categories = () => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, charactersRes, seriesDataRes] = await Promise.all([
-                    fetch('https://character-hub.onrender.com/api/categories/all-categories', { method: 'GET', credentials: 'include' }),
-                    fetch('https://character-hub.onrender.com/api/characters/all-characters', { method: 'GET', credentials: 'include' }),
-                    fetch('https://character-hub.onrender.com/api/series/all-series', { method: 'GET', credentials: 'include' }),
+                    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {
@@ -120,7 +120,7 @@ const Categories = () => {
             : series.filter((s) => s.category?.slug?.toLowerCase() === selectedCategory.toLowerCase())
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-        return (
+    return (
         <div className="min-h-screen py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
