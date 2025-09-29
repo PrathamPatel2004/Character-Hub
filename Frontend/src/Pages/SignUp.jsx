@@ -34,7 +34,7 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            const res = await fetch('https://character-hub.onrender.com/api/auth/register', {
+            const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/register`, {
                 method : 'POST',
                 headers : {
                     'Content-Type': 'application/json'
