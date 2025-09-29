@@ -6,6 +6,7 @@ import UserModel from '../Models/UserModel.js';
 import mongoose from 'mongoose';
 import generateAccessToken from '../Utils/generateAccessToken.js';
 import uploadImageClodinary from '../Utils/uploadImageClodinary.js';
+import crypto from 'crypto';
 import { populate } from 'dotenv';
 
 export const registerUser = async (req, res) => {
@@ -108,58 +109,58 @@ export const ResendOTP = async (req, res) => {
 };
 
 export const LoginUser = async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
-  }
-
-  try {
-    const user = await UserModel.findOne({ email });
-    if (!user || !user.isVerified) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    if (user.temporaryBanned) {
-      return res.status(401).json({
-        message: 'Your account is temporarily banned. Contact support.',
-      });
+    try {
+        const user = await UserModel.findOne({ email });
+        if (!user || !user.isVerified) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        if (user.temporaryBanned) {
+            return res.status(401).json({
+                message: 'Your account is temporarily banned. Contact support.',
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const accesstoken = generateAccessToken(user._id);
+
+        const wasFirstLogin = user.isFirstLogin;
+        user.lastLoggedIn = new Date();
+        if (wasFirstLogin) user.isFirstLogin = false;
+        await user.save();
+
+        res.cookie('accesstoken', accesstoken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'None',
+          path: '/',
+          maxAge: 1000 * 60 * 60 * 24 * 30,
+        });
+
+        res.status(200).json({
+            message: 'Login successful',
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePic: user.profilePic,
+                isFirstLogin: wasFirstLogin,
+            },
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const accesstoken = generateAccessToken(user._id);
-
-    const wasFirstLogin = user.isFirstLogin;
-    user.lastLoggedIn = new Date();
-    if (wasFirstLogin) user.isFirstLogin = false;
-    await user.save();
-
-    res.cookie('accesstoken', accesstoken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      path: '/',
-      maxAge: 1000 * 60 * 60 * 24 * 30,
-    });
-
-    res.status(200).json({
-      message: 'Login successful',
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        profilePic: user.profilePic,
-        isFirstLogin: wasFirstLogin,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
 };
 
 export const ForgotPassword = async (req, res) => {
@@ -171,22 +172,110 @@ export const ForgotPassword = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        user.otp = otp;
-        user.otpExpires = Date.now() + 10 * 60 * 1000;
+        const token = crypto.randomBytes(32).toString('hex');
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        user.resetPasswordToken = hashedToken;
+        user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
         await user.save();
+
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
         await sendEmail({
             to : email,
             subject : 'Reset your password',
-            text : `Your OTP code is ${otp}`,
-            html : `<p>Your OTP code is <strong>${otp}</strong></p>`,
+            html: `<p>Click the link below to reset your password. The link expires in 15 minutes.</p>
+                   <button style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${resetLink}">Reset Password</a></button>`,
         });
 
-        res.status(200).json({ message : 'OTP sent to your email' });
+        res.status(200).json({ message : 'Reset link sent to your email' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message : 'Server error' });
+    }
+};
+
+export const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    try {
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        const user = await UserModel.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() }, // Token not expired
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: 'Invalid or expired token' });
+    }
+};
+
+export const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: 'Both current and new passwords are required' });
+    }
+
+    try {
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (err) {
+        console.error('Error in changePassword:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const validateResetToken = async (req, res) => {
+    const { token } = req.params;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    try {
+        const user = await UserModel.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+        res.status(200).json({ message: 'Token is valid' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
