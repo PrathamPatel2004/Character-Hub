@@ -22,6 +22,8 @@ const userSchema = new mongoose.Schema({
         default: null,
         index: { expireAfterSeconds: 0 },
     },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 }, { timestamps : true });
 
 const UserModel = mongoose.model("User", userSchema);
