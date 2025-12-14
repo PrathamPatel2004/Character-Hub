@@ -22,7 +22,7 @@ const AddSeries = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/all-categories`, { method : 'GET' , credentials : 'include' });
+                const res = await fetch(`/api/categories/all-categories`, { method : 'GET' , credentials : 'include' });
                 const data = await res.json();
                 setCategoriesList(data.categories);
             } catch (err) {
@@ -136,12 +136,12 @@ const AddSeries = () => {
         console.log('User in Add-Series :', user);
         if (single) {
             formData.append('singleImage', file);
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload/uploadFile`, { method: 'POST', body: formData, credentials: 'include' });
+            const res = await fetch(`/api/upload/uploadFile`, { method: 'POST', body: formData, credentials: 'include' });
             const data = await res.json();
             return data?.data?.secure_url;
         } else {
             file.forEach(f => formData.append('MultipleImages', f));
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload/uploadFiles`, { method: 'POST', body: formData, credentials: 'include' });
+            const res = await fetch(`/api/upload/uploadFiles`, { method: 'POST', body: formData, credentials: 'include' });
             const json = await res.json();
 
             const urls = json?.data?.filter(u => u.success).map(u => u.data.secure_url);
@@ -163,7 +163,7 @@ const AddSeries = () => {
             const payload = { ...formData, coverImage: coverImageUrl, imageGallery: galleryUrls };
 
 
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/series/add-series`, {
+            const res = await fetch(`/api/series/add-series`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

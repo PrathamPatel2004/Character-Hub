@@ -41,8 +41,8 @@ const Series = () => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, seriesDataRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {

@@ -11,7 +11,7 @@ const useFollowUser = (followingUserId) => {
 
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/auth/follow-status/${followingUserId}`,
+                    `/api/auth/follow-status/${followingUserId}`,
                     { method: "GET", credentials: 'include' }
                 );
 
@@ -35,8 +35,8 @@ const useFollowUser = (followingUserId) => {
             setLoading(true);
 
             const url = isFollowing
-                ? `${import.meta.env.VITE_API_BASE_URL}/api/auth/unfollow/${followingUserId}`
-                : `${import.meta.env.VITE_API_BASE_URL}/api/auth/follow/${followingUserId}`;
+                ? `/api/auth/unfollow/${followingUserId}`
+                : `/api/auth/follow/${followingUserId}`;
 
             const res = await fetch(url, {
                 method: isFollowing ? 'DELETE' : 'POST',

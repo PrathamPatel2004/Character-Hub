@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const verifySession = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-access-token`, {
+                const res = await fetch(`/api/auth/verify-access-token`, {
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/logout`, {
+            await fetch(`/api/auth/logout`, {
                 method: 'GET',
                 credentials: 'include',
             });

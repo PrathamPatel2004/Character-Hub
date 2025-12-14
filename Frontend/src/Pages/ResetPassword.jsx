@@ -22,7 +22,7 @@ const ResetPassword = () => {
     useEffect(() => {
         const validateToken = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/validate-reset-token/${token}`);
+                const res = await fetch(`/api/auth/validate-reset-token/${token}`);
                 if (!res.ok) throw new Error('Invalid or expired token');
                 setIsTokenValid(true);
             } catch (err) {
@@ -57,7 +57,7 @@ const ResetPassword = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/reset-password/${token}`, {
+            const res = await fetch(`/api/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword }),

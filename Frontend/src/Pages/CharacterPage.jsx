@@ -27,8 +27,8 @@ const CharacterPage = () => {
         const fetchData = async () => {
             try {
                 const [characterDataRes, charactersRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
-                    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
+                    fetch(`/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
+                    fetch(`/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
                 ]);
 
                 if (characterDataRes.ok) {

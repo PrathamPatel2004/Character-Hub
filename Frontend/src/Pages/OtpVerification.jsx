@@ -66,7 +66,7 @@ const OTPVerification = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-OTP`, {
+            const res = await fetch(`/api/auth/verify-OTP`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp: otpCode }),
@@ -97,7 +97,7 @@ const OTPVerification = () => {
         setResendLoading(true);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/resend-otp`, {
+            const res = await fetch(`/api/auth/resend-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

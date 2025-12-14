@@ -24,7 +24,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`/api/auth/get-user-info/${id}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
