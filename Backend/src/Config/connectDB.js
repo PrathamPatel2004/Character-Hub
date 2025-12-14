@@ -1,11 +1,4 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-if (!process.env.MONGODB_URI) {
-    throw new Error("MONGODB_URI is not defined");
-}
 
 let cached = global.mongoose;
 
@@ -19,14 +12,18 @@ const connectDB = async () => {
     }
 
     if (!cached.promise) {
+        if (!process.env.MONGO_URI) {
+            throw new Error("MONGO_URI is missing in Vercel env vars");
+        }
         cached.promise = mongoose.connect(process.env.MONGODB_URI, {
             bufferCommands: false,
+        }).then((mongoose) => {
+            console.log("✅ MongoDB connected");
+            return mongoose;
         });
     }
 
     cached.conn = await cached.promise;
-    console.log("MongoDB connected");
-
     return cached.conn;
 };
 

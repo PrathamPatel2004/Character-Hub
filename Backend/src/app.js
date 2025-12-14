@@ -16,6 +16,7 @@ import commentRouter from './Routes/commentRoute.js';
 
 const app = express();
 
+await connectDB();
 app.use(cors({
     credentials: true,
     origin: process.env.FRONTEND_URL,
