@@ -1,26 +1,26 @@
 import { Resend } from "resend";
 
-import dotenv from "dotenv";
-dotenv.config();
+let resendClient;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResendClient = () => {
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error("RESEND_API_KEY missing");
+    }
+    if (!resendClient) {
+        resendClient = new Resend(process.env.RESEND_API_KEY);
+    }
+    return resendClient;
+};
 
 const sendEmail = async ({ to, subject, text, html }) => {
-    try {
-        const data = await resend.emails.send({
-            from: "Character Hub <onboarding@resend.dev>",
-            to,
-            subject,
-            text,
-            html,
-        });
-
-        return data;
-    } catch (error) {
-        console.error("Resend error:", error);
-        throw error;
-    }
-
+    const resend = getResendClient();
+    return resend.emails.send({
+        from: "Character Hub <onboarding@resend.dev>",
+        to,
+        subject,
+        text,
+        html,
+    });
 };
 
 export default sendEmail;
