@@ -6,6 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../Contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -16,7 +17,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name] : e.target.value });
@@ -27,7 +27,7 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/login`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -42,7 +42,7 @@ const Login = () => {
             toast.success('Login successful!');
 
             if (data.user.isFirstLogin) {
-                navigate(`${API}/add-profile-info/${data.user._id}`);
+                navigate(`${API_BASE_URL}/add-profile-info/${data.user._id}`);
             } else {
                 navigate('/');
             }

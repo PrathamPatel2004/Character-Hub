@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const AuthContext = createContext();
 
@@ -18,12 +19,11 @@ export const AuthProvider = ({ children }) => {
         }
     });
     const [loading, setLoading] = useState(true);
-    const API = import.meta.env.VITE_API_BASE_URL
 
     useEffect(() => {
         const verifySession = async () => {
             try {
-                const res = await fetch(`${API}/api/auth/verify-access-token`, {
+                const res = await fetch(`${API_BASE_URL}/api/auth/verify-access-token`, {
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch(`${API}/api/auth/logout`, {
+            await fetch(`${API_BASE_URL}/api/auth/logout`, {
                 method: 'GET',
                 credentials: 'include',
             });

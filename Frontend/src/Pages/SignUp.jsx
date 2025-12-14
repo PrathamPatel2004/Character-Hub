@@ -6,6 +6,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -18,7 +19,6 @@ const Signup = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name] : e.target.value });
@@ -35,7 +35,7 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/register`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method : 'POST',
                 headers : {
                     'Content-Type': 'application/json'

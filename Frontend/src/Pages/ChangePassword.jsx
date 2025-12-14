@@ -7,6 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../Contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const ChangePassword = () => {
     const { user } = useAuth();
@@ -22,7 +23,6 @@ const ChangePassword = () => {
         newPassword: '',
         confirmPassword: ''
     });
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,7 +51,7 @@ const ChangePassword = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/change-password`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

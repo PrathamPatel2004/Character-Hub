@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import NoImageFound from '/NoImageFound.svg'
 import useFollowUser from '../Hooks/useFollow';
 import { useParams } from 'react-router-dom';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const UserProfile = () => {
     const { id } = useParams();
@@ -20,12 +21,11 @@ const UserProfile = () => {
     const [userData, setUserData] = useState(null);
     const [activeTab, setActiveTab] = useState('characters');
     const [loadingData, setLoadingData] = useState(true);
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch(`${API}/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`${API_BASE_URL}/api/auth/get-user-info/${id}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {

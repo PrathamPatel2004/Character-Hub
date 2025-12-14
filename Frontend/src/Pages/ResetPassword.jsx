@@ -5,6 +5,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Invalid_or_expired from '/Invalid_or_expired.svg';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -18,12 +19,11 @@ const ResetPassword = () => {
         confirm: false
     });
     const [loading, setLoading] = useState(false);
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const validateToken = async () => {
             try {
-                const res = await fetch(`${API}/api/auth/validate-reset-token/${token}`);
+                const res = await fetch(`${API_BASE_URL}/api/auth/validate-reset-token/${token}`);
                 if (!res.ok) throw new Error('Invalid or expired token');
                 setIsTokenValid(true);
             } catch (err) {
@@ -58,7 +58,7 @@ const ResetPassword = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/reset-password/${token}`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword }),

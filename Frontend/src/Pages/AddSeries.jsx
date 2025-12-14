@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import CropModal from '../Components/CropModel';
 import { useAuth } from '../Contexts/AuthContext';
 import NoImageFound from '/NoImageFound.svg'
+import { API_BASE_URL } from '../Utils/App.js';
 
 const AddSeries = () => {
     const { user } = useAuth();
@@ -18,12 +19,11 @@ const AddSeries = () => {
     const [showCropModal, setShowCropModal] = useState(false);
     const [imageGallery, setImageGallery] = useState([]); 
     const [loading, setLoading] = useState(false);
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch(`${API}/api/categories/all-categories`, { method : 'GET' , credentials : 'include' });
+                const res = await fetch(`${API_BASE_URL}/api/categories/all-categories`, { method : 'GET' , credentials : 'include' });
                 const data = await res.json();
                 setCategoriesList(data.categories);
             } catch (err) {
@@ -137,12 +137,12 @@ const AddSeries = () => {
         console.log('User in Add-Series :', user);
         if (single) {
             formData.append('singleImage', file);
-            const res = await fetch(`${API}/api/upload/uploadFile`, { method: 'POST', body: formData, credentials: 'include' });
+            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFile`, { method: 'POST', body: formData, credentials: 'include' });
             const data = await res.json();
             return data?.data?.secure_url;
         } else {
             file.forEach(f => formData.append('MultipleImages', f));
-            const res = await fetch(`${API}/api/upload/uploadFiles`, { method: 'POST', body: formData, credentials: 'include' });
+            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFiles`, { method: 'POST', body: formData, credentials: 'include' });
             const json = await res.json();
 
             const urls = json?.data?.filter(u => u.success).map(u => u.data.secure_url);
@@ -164,7 +164,7 @@ const AddSeries = () => {
             const payload = { ...formData, coverImage: coverImageUrl, imageGallery: galleryUrls };
 
 
-            const res = await fetch(`${API}/api/series/add-series`, {
+            const res = await fetch(`${API_BASE_URL}/api/series/add-series`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

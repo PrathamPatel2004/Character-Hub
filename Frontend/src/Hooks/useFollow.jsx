@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from '../Utils/App.js';
 
 const useFollowUser = (followingUserId) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [loading, setLoading] = useState(false);
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const followStatus = async () => {
@@ -12,7 +12,7 @@ const useFollowUser = (followingUserId) => {
 
             try {
                 const res = await fetch(
-                    `${API}/api/auth/follow-status/${followingUserId}`,
+                    `${API_BASE_URL}/api/auth/follow-status/${followingUserId}`,
                     { method: "GET", credentials: 'include' }
                 );
 
@@ -36,8 +36,8 @@ const useFollowUser = (followingUserId) => {
             setLoading(true);
 
             const url = isFollowing
-                ? `${API}/api/auth/unfollow/${followingUserId}`
-                : `${API}/api/auth/follow/${followingUserId}`;
+                ? `${API_BASE_URL}/api/auth/unfollow/${followingUserId}`
+                : `${API_BASE_URL}/api/auth/follow/${followingUserId}`;
 
             const res = await fetch(url, {
                 method: isFollowing ? 'DELETE' : 'POST',

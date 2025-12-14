@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ShieldIcon from '@mui/icons-material/Shield';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const OTPVerification = () => {
     const location = useLocation();
@@ -13,7 +14,6 @@ const OTPVerification = () => {
     const [timer, setTimer] = useState(30);
     const inputRefs = useRef([]);
     const email = location.state?.email || 'your email';
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         if (timer > 0) {
@@ -67,7 +67,7 @@ const OTPVerification = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/verify-OTP`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/verify-OTP`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp: otpCode }),
@@ -98,7 +98,7 @@ const OTPVerification = () => {
         setResendLoading(true);
 
         try {
-            const res = await fetch(`${API}/api/auth/resend-otp`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/resend-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

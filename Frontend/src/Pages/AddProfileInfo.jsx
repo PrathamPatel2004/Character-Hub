@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CropModal from '../Components/CropModel';
 import Sad from '/Sad.webp';
 import { useAuth } from '../Contexts/AuthContext';
+import { API_BASE_URL } from '../Utils/App.js';
 
 const AddProfileInfo = () => {
     const { user } = useAuth();
@@ -14,7 +15,6 @@ const AddProfileInfo = () => {
     const [showCropModal, setShowCropModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const API = import.meta.env.VITE_API_BASE_URL;
 
     const [formData, setFormData] = useState({
         avatar: '',
@@ -31,7 +31,7 @@ const AddProfileInfo = () => {
     useEffect(() => {
         const fetchProfileInfo = async () => {
             try {
-                const res = await fetch(`${API}/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`${API_BASE_URL}/api/auth/get-user-info/${id}`, {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -98,12 +98,12 @@ const AddProfileInfo = () => {
         console.log('User in AddCharacter:', user);
         if (single) {
             formData.append('singleImage', file);
-            const res = await fetch(`${API}/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
             const data = await res.json()
             return data?.data?.secure_url;
         } else {
             file.forEach(f => formData.append('MultipleImages', f));
-            const res = await fetch(`${API}/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
             const data = await res.json();
             return data?.data?.map(d => d.secure_url);
         }
@@ -123,7 +123,7 @@ const AddProfileInfo = () => {
 
             formDataToSend.append("bio", bio);
 
-            const res = await fetch(`${API}/api/auth/add-profile-info`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/add-profile-info`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formDataToSend
