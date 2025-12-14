@@ -6,7 +6,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -35,7 +34,7 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            const res = await fetch(`/api/auth/register`, {
                 method : 'POST',
                 headers : {
                     'Content-Type': 'application/json'
@@ -44,7 +43,8 @@ const Signup = () => {
                     username : formData.username,
                     email : formData.email,
                     password : formData.password
-                })
+                }),
+                credentials: "include"
             });
 
             const data = await res.json();

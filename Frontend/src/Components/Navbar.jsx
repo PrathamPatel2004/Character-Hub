@@ -8,7 +8,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Sad from '/Sad.webp'
 import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../Utils/App.js'; 
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +22,7 @@ const Navbar = () => {
     useEffect(() => {
         const fetchProfileInfo = async () => {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`/api/auth/get-user-info/${id}`, {
                     method : 'GET',
                     credentials : 'include'
                 });
@@ -53,7 +52,7 @@ const Navbar = () => {
     e.preventDefault();
 
     try {
-        const res = await fetch(`${API_BASE_URL}/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
+        const res = await fetch(`/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
             method: 'GET',
             credentials: 'include',
         });

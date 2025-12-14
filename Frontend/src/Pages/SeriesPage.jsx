@@ -11,7 +11,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CharacterCard from '../Components/CharacterCard';
 import CommentCard from '../Components/CommentCard';
 import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const SeriesPage = () => {
     const { id } = useParams();
@@ -28,8 +27,8 @@ const SeriesPage = () => {
         const fetchData = async () => {
             try {
                 const [seriesDataRes, allSeriesDataRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
   
                 if (seriesDataRes.ok) {

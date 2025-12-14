@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import MailIcon from '@mui/icons-material/Mail';
 import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +13,11 @@ const ForgotPassword = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+            const res = await fetch(`/api/auth/forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
+                credentials: "include"
             });
             const data = await res.json();
             if (!res.ok) {

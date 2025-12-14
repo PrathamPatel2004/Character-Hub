@@ -7,7 +7,6 @@ import CharacterCard from '../Components/CharacterCard';
 import SeriesCard from '../Components/SeriesCard';
 import EmptyData from '/EmptyData.png'
 import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const Home = () => {
     const [series, setSeries] = useState([]);
@@ -22,10 +21,10 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, charactersRes, seriesDataRes, userDataRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${API_BASE_URL}/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${API_BASE_URL}/api/auth/allUsers`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/auth/allUsers`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {

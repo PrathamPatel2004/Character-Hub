@@ -148,7 +148,7 @@ export const LoginUser = async (req, res) => {
         res.cookie('accesstoken', accesstoken, {
           httpOnly: true,
           secure: true,
-          sameSite: 'None',
+          sameSite: 'lax',
           path: '/',
           maxAge: 1000 * 60 * 60 * 24 * 30,
         });
@@ -388,7 +388,7 @@ export const logoutUser = (req, res) => {
     res.clearCookie('accesstoken', accesstoken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'None',
+      sameSite: 'lax',
       path: '/',
     });
   res.status(200).json({ message: 'Logged out' });

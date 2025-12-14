@@ -11,7 +11,6 @@ import CharacterCard from '../Components/CharacterCard';
 import CommentCard from '../Components/CommentCard';
 import toast from 'react-hot-toast';
 import SeriesCard from '../Components/SeriesCard';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const CharacterPage = () => {
     const { id } = useParams();
@@ -28,8 +27,8 @@ const CharacterPage = () => {
         const fetchData = async () => {
             try {
                 const [characterDataRes, charactersRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
-                    fetch(`${API_BASE_URL}/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
+                    fetch(`/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
+                    fetch(`/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
                 ]);
 
                 if (characterDataRes.ok) {

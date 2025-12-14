@@ -6,7 +6,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CropModal from '../Components/CropModel';
 import Sad from '/Sad.webp';
 import { useAuth } from '../Contexts/AuthContext';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const AddProfileInfo = () => {
     const { user } = useAuth();
@@ -36,7 +35,7 @@ const AddProfileInfo = () => {
         if (!id) return;
         const fetchProfileInfo = async () => {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`/api/auth/get-user-info/${id}`, {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -103,12 +102,12 @@ const AddProfileInfo = () => {
         console.log('User in AddCharacter:', user);
         if (single) {
             formData.append('singleImage', file);
-            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
             const data = await res.json()
             return data?.data?.secure_url;
         } else {
             file.forEach(f => formData.append('MultipleImages', f));
-            const res = await fetch(`${API_BASE_URL}/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
             const data = await res.json();
             return data?.data?.map(d => d.secure_url);
         }
@@ -128,7 +127,7 @@ const AddProfileInfo = () => {
 
             formDataToSend.append("bio", bio);
 
-            const res = await fetch(`${API_BASE_URL}/api/auth/add-profile-info`, {
+            const res = await fetch(`/api/auth/add-profile-info`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formDataToSend

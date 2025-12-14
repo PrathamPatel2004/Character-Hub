@@ -6,7 +6,6 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import toast from 'react-hot-toast';
 import Not_Found_Icon from '/Not_Found_Icon.svg';
 import Category_All from '/Category_All.png';
-import { API_BASE_URL } from '../Utils/App.js';
 
 const CategoryButton = ({ slug, name, icon, selectedCategory, onClick }) => (
     <button
@@ -42,8 +41,8 @@ const Series = () => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, seriesDataRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
-                    fetch(`${API_BASE_URL}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {
