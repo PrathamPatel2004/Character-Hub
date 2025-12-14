@@ -39,9 +39,12 @@ export const registerUser = async (req, res) => {
 
         await sendEmail({
             to : email,
-            subject : 'Verify your Mail',
-            text : `Your OTP code is ${otp}`,
-            html : `<p>Your OTP code is <strong>${otp}</strong></p>`,
+            subject : 'Verify your Mail - Character Hub',
+            text : `Please verify your email using the following OTP, if you did not request this, please Contact us`,
+            html : `<h2>Verify your email</h2>
+                    <p>Your OTP is:</p>
+                    <h1>${otp}</h1>
+                    <p>This OTP expires in 10 minutes.</p>`,
         });
 
         res.status(201).json({ message : 'User registered successfully. Please verify your email', email : newUser.email });
@@ -97,8 +100,11 @@ export const ResendOTP = async (req, res) => {
         await sendEmail({
             to: email,
             subject: 'Your new OTP code',
-            text: `Your new OTP code is ${newOtp}`,
-            html: `<p>Your new OTP code is <strong>${newOtp}</strong></p>`,
+            text: `You received a new OTP code, if you did not request this, please Contact us`,
+            html: `<h2>Your new OTP code</h2>
+                    <p>Your New OTP is:</p>
+                    <h1>${otp}</h1>
+                    <p>This OTP expires in 10 minutes.</p>`,
         });
 
         res.status(200).json({ message : 'New OTP sent' });
@@ -184,7 +190,7 @@ export const ForgotPassword = async (req, res) => {
         await sendEmail({
             to : email,
             subject : 'Reset your password',
-            html: `<p>Click the link below to reset your password. The link expires in 15 minutes.</p>
+            html: `<p>Click the link below to reset your password. The link expires in 15 minutes, if you did not request this, please Contact us</p>
                    <button style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;"><a href="${resetLink}">Reset Password</a></button>`,
         });
 

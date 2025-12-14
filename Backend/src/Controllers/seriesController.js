@@ -99,8 +99,11 @@ export const addSeriesData = async (req, res) => {
         try {
             await sendEmail({
                 to : email,
-                subject : 'New Series Added',
+                subject : 'New Series Added to Character Hub',
                 text : `A new Series named "${newSeries.seriesName}" has been added.`,
+                html : `<p>A new Series named <strong>"${newSeries.seriesName}"</strong> has been added.</p>
+                        <p>Check it out <a href="https://character-hub-five.vercel.app/series/${newSeries._id}">here</a></p>`
+
             });
         }catch (e){
             console.warn('Email failed : ', e.message);
