@@ -19,7 +19,8 @@ const app = express();
 await connectDB();
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL,
+    origin: "https://character-hub-five.vercel.app",
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(cookieParser());
