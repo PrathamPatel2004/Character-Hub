@@ -20,11 +20,12 @@ const UserProfile = () => {
     const [userData, setUserData] = useState(null);
     const [activeTab, setActiveTab] = useState('characters');
     const [loadingData, setLoadingData] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch(`/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`${API}/api/auth/get-user-info/${id}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {

@@ -18,6 +18,7 @@ const Signup = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name] : e.target.value });
@@ -34,7 +35,7 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`/api/auth/register`, {
+            const res = await fetch(`${API}/api/auth/register`, {
                 method : 'POST',
                 headers : {
                     'Content-Type': 'application/json'

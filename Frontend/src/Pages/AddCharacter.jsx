@@ -23,13 +23,14 @@ const AddCharacter = () => {
     const [showCropModal, setShowCropModal] = useState(false);
     const [galleryImages, setGalleryImages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, seriesDataRes] = await Promise.all([
-                    fetch(`/api/categories/all-categories`, { method : 'GET', credentials : 'include' }),
-                    fetch(`/api/series/all-series`, { method : 'GET', credentials : 'include' }),
+                    fetch(`${API}/api/categories/all-categories`, { method : 'GET', credentials : 'include' }),
+                    fetch(`${API}/api/series/all-series`, { method : 'GET', credentials : 'include' }),
                 ]);
     
                 if (categoriesRes.ok) {
@@ -66,7 +67,7 @@ const AddCharacter = () => {
 
         const fetchSeries = async () => {
             try {
-            const res = await fetch(`/api/series/all-series`, { method : 'GET' , credentials : 'include' });
+            const res = await fetch(`${API}/api/series/all-series`, { method : 'GET' , credentials : 'include' });
             const data = await res.json();
             (data.series);
             } catch (err) {
@@ -202,12 +203,12 @@ const AddCharacter = () => {
         console.log('User in AddCharacter:', user);
         if (single) {
             formData.append('singleImage', file);
-            const res = await fetch(`/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`${API}/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
             const data = await res.json();
             return data?.data?.secure_url;
         } else {
             file.forEach(f => formData.append('MultipleImages', f));
-            const res = await fetch(`/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
+            const res = await fetch(`${API}/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
             const json = await res.json();
 
             const urls = json?.data?.filter(u => u.success).map(u => u.data.secure_url);
@@ -229,7 +230,7 @@ const AddCharacter = () => {
                 characterImage : characterImageUrl,
                 galleryImages : galleryUrls,
             };
-            const res = await fetch(`/api/characters/add-character`, {
+            const res = await fetch(`${API}/api/characters/add-character`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',

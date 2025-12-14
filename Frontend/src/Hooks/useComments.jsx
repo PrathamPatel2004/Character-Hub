@@ -6,6 +6,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
     const { user } = useAuth();
     const [comments, setComments] = useState([]);
     const [loadingComments, setLoadingComments] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -14,8 +15,8 @@ const useComments = ({ seriesId, characterId } = {}) => {
             try {
                 setLoadingComments(true);
                 const url = characterId
-                    ? `/api/comments/character/${characterId}`
-                    : `/api/comments/series/${seriesId}`;
+                    ? `${API}/api/comments/character/${characterId}`
+                    : `${API}/api/comments/series/${seriesId}`;
 
                 const res = await fetch(url);
                 if (!res.ok) throw new Error("Failed to load comments");
@@ -35,7 +36,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
         if (!content.trim()) return toast.error("Comment cannot be empty");
 
         try {
-            const res = await fetch(`/api/comments/add-comment`, {
+            const res = await fetch(`${API}/api/comments/add-comment`, {
                 method : "POST",
                 credentials : "include",
                 headers: { "Content-Type": "application/json" },
@@ -58,7 +59,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
 
     const deleteComment = async (commentId) => {
         try {
-            const res = await fetch(`/api/comments/delete-comment`, {
+            const res = await fetch(`${API}/api/comments/delete-comment`, {
                 method: "DELETE",
                 credentials: "include",
                 headers: {
@@ -87,7 +88,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
         if (!content.trim()) return toast.error("Reply cannot be empty");
 
         try {
-            const res = await fetch(`/api/comments/reply-comment`, {
+            const res = await fetch(`${API}/api/comments/reply-comment`, {
                 method : "POST",
                 credentials : "include",
                 headers: { "Content-Type": "application/json" },
@@ -125,7 +126,7 @@ const useComments = ({ seriesId, characterId } = {}) => {
                 )
             );
 
-            const res = await fetch(`/api/comments/like-comment`, {
+            const res = await fetch(`${API}/api/comments/like-comment`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

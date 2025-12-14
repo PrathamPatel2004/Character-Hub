@@ -16,15 +16,16 @@ const Home = () => {
     const [recentSeries, setRecentSeries ] = useState([]);
     const [users, setUsers] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, charactersRes, seriesDataRes, userDataRes] = await Promise.all([
-                    fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/auth/allUsers`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/auth/allUsers`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {

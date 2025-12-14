@@ -22,13 +22,14 @@ const CharacterPage = () => {
     const [commentText, setCommentText] = useState("");
     const [sortBy, setSortBy] = useState("recent");
     const [loadingData, setLoadingData] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [characterDataRes, charactersRes] = await Promise.all([
-                    fetch(`/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
-                    fetch(`/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
+                    fetch(`${API}/api/characters/character/${id}`, { method : 'GET', credentials : 'include' }),
+                    fetch(`${API}/api/characters/all-characters`, { method : 'GET', credentials : 'include' }),
                 ]);
 
                 if (characterDataRes.ok) {

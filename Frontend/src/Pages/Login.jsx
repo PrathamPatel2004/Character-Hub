@@ -16,6 +16,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name] : e.target.value });
@@ -26,7 +27,7 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`/api/auth/login`, {
+            const res = await fetch(`${API}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -41,7 +42,7 @@ const Login = () => {
             toast.success('Login successful!');
 
             if (data.user.isFirstLogin) {
-                navigate(`/add-profile-info/${data.user._id}`);
+                navigate(`${API}/add-profile-info/${data.user._id}`);
             } else {
                 navigate('/');
             }

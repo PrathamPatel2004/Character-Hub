@@ -22,6 +22,7 @@ const ChangePassword = () => {
         newPassword: '',
         confirmPassword: ''
     });
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,7 +51,7 @@ const ChangePassword = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`/api/auth/change-password`, {
+            const res = await fetch(`${API}/api/auth/change-password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

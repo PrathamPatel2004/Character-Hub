@@ -37,14 +37,15 @@ const Categories = () => {
     const [selectedCategory, setSelectedCategory] = useState(initialCategory);
     const [viewMode, setViewMode] = useState('grid');
     const [loadingData, setLoadingData] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, charactersRes, seriesDataRes] = await Promise.all([
-                    fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {

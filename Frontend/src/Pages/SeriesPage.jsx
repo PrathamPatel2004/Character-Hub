@@ -22,13 +22,14 @@ const SeriesPage = () => {
     const [commentText, setCommentText] = useState("");
     const [sortBy, setSortBy] = useState("recent");
     const [loadingData, setLoadingData] = useState(true);
+    const API = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [seriesDataRes, allSeriesDataRes] = await Promise.all([
-                    fetch(`/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/series/series/${id}`, { method: 'GET', credentials: 'include' }),
+                    fetch(`${API}/api/series/all-series`, { method: 'GET', credentials: 'include' }),
                 ]);
   
                 if (seriesDataRes.ok) {

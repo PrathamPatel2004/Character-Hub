@@ -16,13 +16,14 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const [serchOpen, setSearchOpen] = useState(false);
     const navigate = useNavigate();
+    const API = import.meta.env.VITE_API_BASE_URL
 
     const id = user?._id
 
     useEffect(() => {
         const fetchProfileInfo = async () => {
             try {
-                const res = await fetch(`/api/auth/get-user-info/${id}`, {
+                const res = await fetch(`${API}/api/auth/get-user-info/${id}`, {
                     method : 'GET',
                     credentials : 'include'
                 });
@@ -52,7 +53,7 @@ const Navbar = () => {
     e.preventDefault();
 
     try {
-        const res = await fetch(`/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
+        const res = await fetch(`${API}/api/search/search-query?q=${encodeURIComponent(searchQuery)}`, {
             method: 'GET',
             credentials: 'include',
         });
