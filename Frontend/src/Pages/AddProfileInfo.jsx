@@ -21,14 +21,19 @@ const AddProfileInfo = () => {
         bio: ''
     });
 
-    if ( user._id !== id ) {
-        navigate('/');
-        toast.error('You are not authorized to access this page.');
-    }
+    useEffect(() => {
+        if (!user) return;
+
+        if (user._id !== id) {
+            toast.error('You are not authorized to access this page.');
+            navigate('/');
+        }
+    }, [user, id, navigate]);
 
     const { avatar, bio } = formData;
 
     useEffect(() => {
+        if (!id) return;
         const fetchProfileInfo = async () => {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/auth/get-user-info/${id}`, {
