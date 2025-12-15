@@ -251,67 +251,73 @@ const Categories = () => {
                         </>
                      )}
                 </div>
-                
-                {filteredSeries.length > 0 ? (
-                    viewMode === 'grid' ? (
-                        <>
-                            <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Series</h1>
-                            <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {filteredSeries.map((series) => (
-                                    <SeriesCard key={series._id} series={series} />
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <div className="space-y-4">
-                            <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Series</h1>
-                            {filteredSeries.map((series) => (
-                                <Link
-                                    to={`/series/${series._id}`}
-                                    key={series._id}
-                                    className="block bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow"
-                                >
-                                    <div className="flex gap-4">
-                                        <img
-                                            src={series.coverImage}
-                                            alt={series.seriesName}
-                                            className="flex w-50 h-24 sm:w-52 sm:h-28 rounded-lg object-cover flex-shrink-0 justify-center items-center"
-                                        />
-                                        <div className="flex-1">
-                                            <div className="flex flex-wrap gap-3 mb-2 sm:mb-3 items-center">
-                                                <h3 className="text-lg sm:text-xl font-bold text-gray-900">{series.seriesName}</h3>
-                                            </div>
-                                            <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
-                                                {series.tags?.slice(0, 3).map((tag) => (
-                                                    <span
-                                                        key={tag}
-                                                        className="bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm"
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
-                                                <span>{series.category?.category || series.category} Series</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    )
+
+                {loadingData === true ? (
+                    <></>      
                 ) : (
-                    <div className="text-center py-12">
-                        <div className="mb-5 flex justify-center items-center">
-                            <img
-                                src={Not_Found_Icon}
-                                alt="Not-Found-Icon"
-                                className="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[15%] h-auto"
-                            />
-                        </div>
-                        <h3 className="text-xl font-medium text-gray-900 mb-2">No Series found</h3>
-                        <p className="text-gray-600">Try selecting a different category or clear your search</p>
-                    </div>
+                    <>
+                        {filteredSeries.length > 0 ? (
+                            viewMode === 'grid' ? (
+                                <>
+                                    <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Series</h1>
+                                    <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                                        {filteredSeries.map((series) => (
+                                            <SeriesCard key={series._id} series={series} />
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="space-y-4">
+                                    <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Series</h1>
+                                    {filteredSeries.map((series) => (
+                                        <Link
+                                            to={`/series/${series._id}`}
+                                            key={series._id}
+                                            className="block bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md transition-shadow"
+                                        >
+                                            <div className="flex gap-4">
+                                                <img
+                                                    src={series.coverImage}
+                                                    alt={series.seriesName}
+                                                    className="flex w-50 h-24 sm:w-52 sm:h-28 rounded-lg object-cover flex-shrink-0 justify-center items-center"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="flex flex-wrap gap-3 mb-2 sm:mb-3 items-center">
+                                                        <h3 className="text-lg sm:text-xl font-bold text-gray-900">{series.seriesName}</h3>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
+                                                        {series.tags?.slice(0, 3).map((tag) => (
+                                                            <span
+                                                                key={tag}
+                                                                className="bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs sm:text-sm"
+                                                            >
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                                                        <span>{series.category?.category || series.category} Series</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )
+                        ) : (
+                            <div className="text-center py-12">
+                                <div className="mb-5 flex justify-center items-center">
+                                    <img
+                                        src={Not_Found_Icon}
+                                        alt="Not-Found-Icon"
+                                        className="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[15%] h-auto"
+                                    />
+                                </div>
+                                <h3 className="text-xl font-medium text-gray-900 mb-2">No Series found</h3>
+                                <p className="text-gray-600">Try selecting a different category or clear your search</p>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
