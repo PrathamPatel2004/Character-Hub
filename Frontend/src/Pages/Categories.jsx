@@ -185,7 +185,7 @@ const Categories = () => {
                                 <strong className="capitalize">{selectedCategoryName}</strong>
                             </p>
 
-                            {filteredCharacters.length > 0 && (
+                            {filteredCharacters.length > 0 ? (
                                 viewMode === 'grid' ? (
                                     <>
                                         <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Characters</h1>
@@ -235,12 +235,24 @@ const Categories = () => {
                                         ))}
                                     </div>
                                 )
+                            ) : (
+                                <div className="text-center py-12">
+                                    <div className="mb-5 flex justify-center items-center">
+                                        <img
+                                            src={Not_Found_Icon}
+                                            alt="Not-Found-Icon"
+                                            className="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[15%] h-auto"
+                                        />
+                                    </div>
+                                    <h3 className="text-xl font-medium text-gray-900 mb-2">No characters found</h3>
+                                    <p className="text-gray-600">Try selecting a different category or clear your search</p>
+                                </div>
                             )} 
                         </>
                      )}
                 </div>
                 
-                {filteredSeries.length > 0 && (
+                {filteredSeries.length > 0 ? (
                     viewMode === 'grid' ? (
                         <>
                             <h1 className='font-medium flex justify-left py-6 ml-1 text-blue-500'>Series</h1>
@@ -288,19 +300,17 @@ const Categories = () => {
                             ))}
                         </div>
                     )
-                )}
-
-                {filteredCharacters.length === 0 && filteredSeries.length === 0 && (
+                ) : (
                     <div className="text-center py-12">
                         <div className="mb-5 flex justify-center items-center">
                             <img
                                 src={Not_Found_Icon}
-                                alt="Not Found"
+                                alt="Not-Found-Icon"
                                 className="w-[40%] sm:w-[30%] md:w-[20%] lg:w-[15%] h-auto"
                             />
                         </div>
-                        <h3 className="text-xl font-medium text-gray-900 mb-2">No results found.</h3>
-                        <p className="text-gray-600">Try selecting a different category.</p>
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No Series found</h3>
+                        <p className="text-gray-600">Try selecting a different category or clear your search</p>
                     </div>
                 )}
             </div>
