@@ -1,4 +1,5 @@
 import { Toaster, toast } from 'react-hot-toast';
+import CloseIcon from '@mui/icons-material/Close';
 
 const CustomToaster = () => {
     return (
@@ -37,7 +38,7 @@ const CustomToaster = () => {
                         onClick={() => toast.dismiss(t.id)}
                         className="text-xs px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                     >
-                        Dismiss
+                        <CloseIcon fontSize="small" />
                     </button>
                 </div>
             )}
