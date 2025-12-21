@@ -20,6 +20,7 @@ const sendEmail = async ({ to, subject, text, html }) => {
         subject,
         text,
         html,
+        reply_to: "patelp149201@gmail.com"
     });
 };
 
