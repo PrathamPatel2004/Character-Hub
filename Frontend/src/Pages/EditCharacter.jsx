@@ -7,7 +7,6 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import 'react-image-crop/dist/ReactCrop.css'
 import NoImageFound from '/NoImageFound.svg'
 import CropModal from '../Components/CropModel';
 
