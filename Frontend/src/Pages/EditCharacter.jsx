@@ -45,11 +45,12 @@ const EditCharacter = () => {
                     powers: data.character.powers || [],
                 });
 
-                if (data.character.galleryImages?.length > 0) {
-                    const existingGallery = data.character.galleryImages.map(url => ({
+                if (Array.isArray(data.character.imageGallery)) {
+                    const existingGallery = data.character.imageGallery.map((url) => ({
                         preview: secureImage(url),
-                        isExisting: true, // 👈 flag
+                        isExisting: true,
                     }));
+                
                     setGalleryImages(existingGallery);
                 }
             } catch (error) {
@@ -126,11 +127,13 @@ const EditCharacter = () => {
 
     const removeGalleryItem = index => {
         const img = galleryImages[index];
-        if (!img.isExisting) {
-            URL.revokeObjectURL(img.preview);
-        }
+        URL.revokeObjectURL(img.preview);
         const updated = galleryImages.filter((_, i) => i !== index);
         setGalleryImages(updated);
+        setFormData(prev => ({
+            ...prev,
+            galleryImages : updated.map(item => item.file),
+        }));
     };
 
     const handleImageChange = e => {
