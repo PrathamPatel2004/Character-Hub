@@ -89,6 +89,22 @@ const EditCharacter = () => {
         }));
     };
 
+    const handleCroppedImage = croppedImage => {
+        const file = dataURLtoFile(croppedImage, 'character.png');
+        setFormData(prev => ({ ...prev, characterImage : file }));
+        setCharacterImage(croppedImage);
+        setShowCropModal(false);
+    };
+
+    const handleCancelCrop = () => {
+        setShowCropModal(false);
+        setCharacterImage(NoImageFound);
+        setFormData(prev => ({
+            ...prev,
+            coverImage: null,
+        }));
+    };
+
     const addArrayItem = field => {
         setFormData(prev => ({ ...prev, [field] : [...prev[field], ''] }));
     };
@@ -145,6 +161,34 @@ const EditCharacter = () => {
             ...prev,
             [field]: updated.map(f => f.file),
         }));
+    };
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        return new File([u8arr], filename, { type : mime });
+    };
+
+    const uploadToCloud = async (file, single = true) => {
+        const formData = new FormData();
+        console.log('User in AddCharacter:', user);
+        if (single) {
+            formData.append('singleImage', file);
+            const res = await fetch(`/api/upload/uploadFile`, { method : 'POST', body : formData, credentials : 'include' });
+            const data = await res.json();
+            return data?.data?.secure_url;
+        } else {
+            file.forEach(f => formData.append('MultipleImages', f));
+            const res = await fetch(`/api/upload/uploadFiles`, { method : 'POST', body : formData, credentials : 'include' });
+            const json = await res.json();
+
+            const urls = json?.data?.filter(u => u.success).map(u => u.data.secure_url);
+            return urls || [];
+        }
     };
 
     const handleSubmit = async (e) => {
