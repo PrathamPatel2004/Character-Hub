@@ -24,6 +24,13 @@ const EditCharacter = () => {
     const [galleryImages, setGalleryImages] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const secureImage = (url) => {
+        if (typeof url !== "string") return url;
+        return url.startsWith("http://")
+            ? url.replace("http://", "https://")
+            : url;
+    };
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
