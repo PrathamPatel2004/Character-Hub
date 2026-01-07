@@ -44,6 +44,14 @@ const EditCharacter = () => {
                     achievements: data.character.achievements || [],
                     powers: data.character.powers || [],
                 });
+
+                if (data.character.galleryImages?.length > 0) {
+                    const existingGallery = data.character.galleryImages.map(url => ({
+                        preview: secureImage(url),
+                        isExisting: true, // 👈 flag
+                    }));
+                    setGalleryImages(existingGallery);
+                }
             } catch (error) {
                 console.error(error);
                 toast.error("Failed to load data");
@@ -118,13 +126,11 @@ const EditCharacter = () => {
 
     const removeGalleryItem = index => {
         const img = galleryImages[index];
-        URL.revokeObjectURL(img.preview);
+        if (!img.isExisting) {
+            URL.revokeObjectURL(img.preview);
+        }
         const updated = galleryImages.filter((_, i) => i !== index);
         setGalleryImages(updated);
-        setFormData(prev => ({
-            ...prev,
-            galleryImages : updated.map(item => item.file),
-        }));
     };
 
     const handleImageChange = e => {
@@ -253,7 +259,7 @@ const EditCharacter = () => {
                         <div className="flex flex-col items-center gap-4">
                             <div className="relative">                
                                 <img
-                                    src={characterImage || character?.characterImage}
+                                    src={character?.characterImage}
                                     alt="Cover Image Preview"
                                     className="w-50 h-50 object-contain border rounded-lg shadow-md"
                                 />
