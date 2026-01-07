@@ -12,6 +12,7 @@ import ChangePassword from './Pages/ChangePassword';
 import ResetPassword from './Pages/ResetPassword';
 import AddProfileInfo from './Pages/AddProfileInfo'
 import AddCharacter from './Pages/AddCharacter';
+import EditCharacter from './Pages/EditCharacter';
 import AddSeries from './Pages/AddSeries';
 import Categories from './Pages/Categories';
 import Characters from './Pages/Characters'
@@ -70,6 +71,7 @@ function App() {
                         <Route path='/reset-password/:token' element={<ResetPassword />} />
                         <Route path='/add-profile-info/:id' element={<AddProfileInfo />} />
                         <Route path='/add-character' element={<AddCharacter />} />
+                        <Route path='/edit-character/:id' element={<EditCharacter />} />
                         <Route path='/add-series' element={<AddSeries />} />
                         <Route path='/categories' element={<Categories />}/>
                         <Route path='/user/:id' element={<UserProfile />} />
