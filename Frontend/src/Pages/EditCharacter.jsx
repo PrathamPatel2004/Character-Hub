@@ -167,7 +167,7 @@ const EditCharacter = () => {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(payload),
                 }
             );
             if (!res.ok) {
@@ -183,15 +183,19 @@ const EditCharacter = () => {
         }
     };
 
-    if (!user._id !== character?.addedBy?._id) {
+    if (character && user && user._id !== character.addedBy?._id) {
         return (
             <div className="min-h-screen flex items-center justify-center py-12 px-4">
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-                    <p className="text-gray-600 mb-6">You do not have permission to edit this character.</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        Access Denied
+                    </h2>
+                    <p className="text-gray-600">
+                        You do not have permission to edit this character.
+                    </p>
                 </div>
             </div>
-        )   
+        );
     }
     return (
         <div className="min-h-screen py-12">
