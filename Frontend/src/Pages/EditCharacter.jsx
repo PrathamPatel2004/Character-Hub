@@ -273,13 +273,13 @@ const EditCharacter = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Character Name</label>
-                                <input type="text" name="name" value={character?.name} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="name" value={character?.name} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Series</label>
-                                <select name="series" value={character?.series} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
-                                    <option disabled>{character?.series}</option>
+                                <select name="series" value={character?.seriesName?.seriesName} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
+                                    <option disabled>{character?.seriesName?.seriesName}</option>
                                 </select>
                             </div>
 
@@ -292,29 +292,29 @@ const EditCharacter = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Species</label>
-                                <input type="text" name="species" value={character?.species} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="species" value={character?.species} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                             </div>
                             
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                                <input type="text" name="role" value={character?.role} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="role" value={character?.role} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                             </div>
                                         
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Created By</label>
-                                <input type="text" name="createdBy" value={character?.createdBy} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="createdBy" value={character?.createdBy} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Performed By</label>
-                                <input type="text" name="performedBy" value={character?.performedBy} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="performedBy" value={character?.performedBy} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Origin</label>
                             <div className="relative">
-                                <input type="text" name="origin" value={character?.origin} className="w-full px-4 py-3 pl-10 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled />
+                                <input type="text" name="origin" value={character?.origin} className="w-full px-4 py-3 pl-10 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" disabled />
                                 <LocationOnIcon className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                             </div>
                         </div>
