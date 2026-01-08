@@ -288,14 +288,14 @@ const EditCharacter = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Series</label>
-                                <select name="series" value={character?.seriesName?.seriesName} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
+                                <select name="series" value={character?.seriesName?.seriesName} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400" disabled>
                                     <option disabled>{character?.seriesName?.seriesName}</option>
                                 </select>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                                <select name="gender" value={character?.gender} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled>
+                                <select name="gender" value={character?.gender} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400" disabled>
                                     <option disabled>{character?.gender}</option>
                                 </select>
                             </div>
