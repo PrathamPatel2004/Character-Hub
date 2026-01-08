@@ -74,8 +74,8 @@ function App() {
                         <Route path='/add-character' element={<AddCharacter />} />
                         <Route path='/edit-character/:id' element={<EditCharacter />} />
                         <Route path='/add-series' element={<AddSeries />} />
-                        <Route path='/edit-series' element={<EditSerie />) />
-                        <Route path='/categories' element={<Categories />}/>
+                        <Route path='/edit-series/:id' element={<EditSerie />) />
+                        <Route path='/categories' element={<Categories />} />
                         <Route path='/user/:id' element={<UserProfile />} />
                         <Route path='/series' element={<Series />} />
                         <Route path='/series/:id' element={<SeriesPage />} />
