@@ -24,7 +24,7 @@ const EditSeries = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch(`/api/series/${id}`, {
+                const res = await fetch(`/api/series/series/${id}`, {
                     method: 'GET',
                     credentials: 'include',
                 });
