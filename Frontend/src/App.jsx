@@ -14,6 +14,7 @@ import AddProfileInfo from './Pages/AddProfileInfo'
 import AddCharacter from './Pages/AddCharacter';
 import EditCharacter from './Pages/EditCharacter';
 import AddSeries from './Pages/AddSeries';
+import EditSeries from './Pages/EditSeries';
 import Categories from './Pages/Categories';
 import Characters from './Pages/Characters'
 import UserProfile from './Pages/UserProfile';
@@ -73,6 +74,7 @@ function App() {
                         <Route path='/add-character' element={<AddCharacter />} />
                         <Route path='/edit-character/:id' element={<EditCharacter />} />
                         <Route path='/add-series' element={<AddSeries />} />
+                        <Route path='/edit-series' element={<EditSerie />) />
                         <Route path='/categories' element={<Categories />}/>
                         <Route path='/user/:id' element={<UserProfile />} />
                         <Route path='/series' element={<Series />} />
