@@ -24,6 +24,7 @@ const EditSeries = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 const res = await fetch(`/api/series/series/${id}`, {
                     method: 'GET',
                     credentials: 'include',
@@ -64,6 +65,8 @@ const EditSeries = () => {
             } catch (err) {
                 console.error(err);
                 toast.error("Failed to load series");
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -181,7 +184,15 @@ const EditSeries = () => {
         }
     };
 
-    if (user._id !== series?.addedBy?._id) {
+    if (loadingData) {
+        return (
+            <div className="flex items-center justify-center min-h-[100dvh]">
+                <p className="text-gray-500 text-lg">Loading series data...</p>
+            </div>
+        )
+    }
+
+    if (user._id !== series.addedBy?._id) {
         return (
             <div className="min-h-screen flex items-center justify-center py-12 px-4">
                 <div className="text-center">
@@ -226,7 +237,7 @@ const EditSeries = () => {
                                 <select
                                     name="category"
                                     value={series.category?.category}
-                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:text-gray-400 disabled:bg-gray-100"
                                     disabled
                                 >
                                     <option value={series.category?.category} disabled>
