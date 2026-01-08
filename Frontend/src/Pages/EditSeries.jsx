@@ -192,7 +192,7 @@ const EditSeries = () => {
         )
     }
 
-    if (user._id !== series.addedBy?._id) {
+    if (user._id !== series?.addedBy?._id) {
         return (
             <div className="min-h-screen flex items-center justify-center py-12 px-4">
                 <div className="text-center">
