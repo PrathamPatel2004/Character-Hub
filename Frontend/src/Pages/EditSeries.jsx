@@ -85,6 +85,22 @@ const EditSeries = () => {
         }
     };
 
+    const handleCroppedImage = croppedImage => {
+        const file = dataURLtoFile(croppedImage, 'series.png');
+        setFormData(prev => ({ ...prev, coverImage: file }));
+        setCoverImage(croppedImage);
+        setShowCropModal(false);
+    };
+
+    const handleCancelCrop = () => {
+        setShowCropModal(false);
+        setCoverImage(NoImageFound);   
+        setFormData(prev => ({
+            ...prev,
+            coverImage: null,
+        }));
+    };
+
     const addTag = () => {
         const tag = newTag.trim().toLowerCase();
         if (tag && !formData.tags.includes(tag)) {
@@ -202,19 +218,19 @@ const EditSeries = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Series Name</label>
-                                <input type="text" name="seriesName" value={series.seriesName} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter series name" disabled />
+                                <input type="text" name="seriesName" value={series.seriesName} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" placeholder="Enter series name" disabled />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Series Category</label>
                                 <select
                                     name="category"
-                                    value={series.category}
+                                    value={series.category?.category}
                                     className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     disabled
                                 >
-                                    <option value={series.category} disabled>
-                                        {series.categoryName}
+                                    <option value={series.category?.category} disabled>
+                                        {series.category?.category}
                                     </option>
                                 </select>
                             </div>
@@ -225,7 +241,7 @@ const EditSeries = () => {
                                     type="text" 
                                     name="originalLanguage" 
                                     value={series.originalLanguage} 
-                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" 
                                     placeholder="Enter series Available in"
                                     disabled
                                 />
@@ -249,7 +265,7 @@ const EditSeries = () => {
                                     type="text" 
                                     name="genre" 
                                     value={series.genre} 
-                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300" 
                                     placeholder="Enter Series Genre (eg: Adventure, Action, Drama, etc.)"
                                     disabled
                                 />
