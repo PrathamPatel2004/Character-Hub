@@ -184,7 +184,7 @@ const EditSeries = () => {
         }
     };
 
-    if (loadingData) {
+    if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[100dvh]">
                 <p className="text-gray-500 text-lg">Loading series data...</p>
