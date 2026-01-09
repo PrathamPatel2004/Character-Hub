@@ -295,14 +295,12 @@ const CharacterPage = () => {
                             )}
 
                             {addedById == user?._id && (
-                                <div className="w-full p-4 flex justify-end">
-                                    <button
-                                        onClick={navigate(`/edit-character/${character.id}`)}
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-                                    >
-                                        Edit Character
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={() => navigate(`/edit-character/${character._id}`)}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    Edit Character
+                                </button>
                             )}
                         </div>
                         
