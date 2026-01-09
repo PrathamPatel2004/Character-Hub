@@ -27,7 +27,7 @@ const AddCharacter = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const seriesDataRes = await fetch(`/api/series/all-series`, { method : 'GET', credentials : 'include' }),
+                const seriesDataRes = await fetch(`/api/series/all-series`, { method : 'GET', credentials : 'include' });
                   
                 if (seriesDataRes.ok) {
                     const seriesData = await seriesDataRes.json();
