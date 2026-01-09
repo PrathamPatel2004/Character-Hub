@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useFollowUser from '../Hooks/useFollow';
 import useComments from '../Hooks/useComments.jsx';
 import { useAuth } from '../Contexts/AuthContext.jsx';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Not_Found_Icon from '/Not_Found_Icon.svg';
 import SendIcon from '@mui/icons-material/Send';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -15,6 +15,7 @@ import SeriesCard from '../Components/SeriesCard';
 const CharacterPage = () => {
     const { id } = useParams();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [character, setCharacter] = useState(null);
     const [characters, setCharacters] = useState([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -290,6 +291,17 @@ const CharacterPage = () => {
                                             <li key={i} className="text-gray-700">🏆 {ach}</li>
                                         ))}
                                     </ul>
+                                </div>
+                            )}
+
+                            {addedById == user?._id && (
+                                <div className="w-full p-4 flex justify-end">
+                                    <button
+                                        onClick={navigate(`/edit-character/${character.id}`)}
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                                    >
+                                        Edit Character
+                                    </button>
                                 </div>
                             )}
                         </div>
