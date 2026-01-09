@@ -14,7 +14,7 @@ import NoImageFound from '/NoImageFound.svg'
 const AddCharacter = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name : '', category : '', series : '', gender : '', species : '', role : '', origin : '', description : '', createdBy : '', performedBy : '', tags : [], facts : [''], achievements : [''], characterImage : '', galleryImages : [], powers : [], });
+    const [formData, setFormData] = useState({ name : '', series : '', gender : '', species : '', role : '', origin : '', description : '', createdBy : '', performedBy : '', tags : [], facts : [''], achievements : [''], characterImage : '', galleryImages : [], powers : [], });
     const [characterImage, setCharacterImage] = useState(NoImageFound);
     const [newTag, setNewTag] = useState('');
     const [newPowers, setNewPowers] = useState('');
@@ -27,23 +27,7 @@ const AddCharacter = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [categoriesRes, seriesDataRes] = await Promise.all([
-                    fetch(`/api/categories/all-categories`, { method : 'GET', credentials : 'include' }),
-                    fetch(`/api/series/all-series`, { method : 'GET', credentials : 'include' }),
-                ]);
-    
-                if (categoriesRes.ok) {
-                    const categoriesData = await categoriesRes.json();
-                    if (categoriesData && categoriesData.categories && Array.isArray(categoriesData.categories)) {
-                        setCategoriesList(categoriesData.categories);
-                    } else {
-                        setCategoriesList([]);
-                        toast.error('No categories data found');
-                    }
-                } else {
-                    setCategoriesList([]);
-                    toast.error(`Failed to fetch categories: ${categoriesRes.statusText}`);
-                }
+                const seriesDataRes = await fetch(`/api/series/all-series`, { method : 'GET', credentials : 'include' }),
                   
                 if (seriesDataRes.ok) {
                     const seriesData = await seriesDataRes.json();
@@ -289,26 +273,6 @@ const AddCharacter = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Character Name *</label>
                                 <input type="text" name="name" required value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter character name" />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Character Category *</label>
-                                <select
-                                    name="category"
-                                    required
-                                    value={formData.category}
-                                    onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                >
-                                    <option value="" disabled>
-                                        Select Category
-                                    </option>             
-                                    {categoriesList?.map((category) => (
-                                        <option key={category._id} value={category._id}>
-                                        {category.category}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
 
                             <div>
