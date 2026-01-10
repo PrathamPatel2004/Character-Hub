@@ -380,7 +380,7 @@ const SeriesPage = () => {
                                 />
                                 {addedById == user?._id ? (
                                     <div className='flex flex-col items-center justify-center'>
-                                        <Link to={`/user/${series.addedBy?._id}`}>
+                                        <Link to={`/user/${addedById}`}>
                                             <h3 className="font-medium text-gray-900 text-xl mb-1">
                                                 {series.addedBy?.username || series.addedBy}
                                             </h3>
@@ -389,7 +389,7 @@ const SeriesPage = () => {
                                             {series.addedBy?.followers?.length} Followers
                                         </h5>
                                         <Link
-                                            to={`/add-profile-info/${id}`}
+                                            to={`/add-profile-info/${addedById}`}
                                             className="items-center px-5 py-1.5 rounded-sm button text-white bg-blue-700"
                                         >
                                             Edit Profile
