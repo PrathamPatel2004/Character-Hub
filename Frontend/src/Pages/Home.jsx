@@ -75,7 +75,7 @@ const Home = () => {
             const recent = characters.filter((character) => {
                 if (!character.createdAt) return false; 
                 const created = new Date(character.createdAt).getTime();
-                return now - created < 15 * 24 * 60 * 60 * 1000;
+                return now;
             })
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 6);
@@ -87,7 +87,7 @@ const Home = () => {
             const recentSeries = series.filter((series) => {
                 if (!series.createdAt) return false; 
                 const created = new Date(series.createdAt).getTime();
-                return now - created < 15 * 24 * 60 * 60 * 1000;
+                return now;
             })
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .slice(0, 3);
