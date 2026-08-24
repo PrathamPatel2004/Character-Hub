@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 import generateAccessToken from '../Utils/generateAccessToken.js';
 import uploadImageClodinary from '../Utils/uploadImageClodinary.js';
 import crypto from 'crypto';
-import { populate } from 'dotenv';
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -103,7 +102,7 @@ export const ResendOTP = async (req, res) => {
             text: `You received a new OTP code, if you did not request this, please Contact us`,
             html: `<h2>Your new OTP code</h2>
                     <p>Your New OTP is:</p>
-                    <h1>${otp}</h1>
+                    <h1>${newOtp}</h1>
                     <p>This OTP expires in 10 minutes.</p>`,
         });
 
@@ -331,6 +330,7 @@ export const getProfileInfo = async (req, res) => {
 
     try {
     const user = await UserModel.findById(id)
+        .select('-password -otp -otpExpires -resetPasswordToken -resetPasswordExpires')
         .populate({
             path: 'charactersAdd',
             select: 'name gender characterImage role tags seriesName',
@@ -385,7 +385,7 @@ export const verifyAccessToken = (req, res) => {
 };
 
 export const logoutUser = (req, res) => {
-    res.clearCookie('accesstoken', accesstoken, {
+    res.clearCookie('accesstoken', {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
@@ -482,12 +482,3 @@ export const checkFollowStatus = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-
-export const allUsers = async (req, res) => {
-    try {
-        const userList = await UserModel.find({});
-        res.status(200).json({ users : userList });
-    } catch {
-        res.status(500).json({ message: 'Server error' });
-    }
-}

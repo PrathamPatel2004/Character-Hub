@@ -20,11 +20,10 @@ const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [categoriesRes, charactersRes, seriesDataRes, userDataRes] = await Promise.all([
+                const [categoriesRes, charactersRes, seriesDataRes] = await Promise.all([
                     fetch(`/api/categories/all-categories`, { method: 'GET', credentials: 'include' }),
                     fetch(`/api/characters/all-characters`, { method: 'GET', credentials: 'include' }),
                     fetch(`/api/series/all-series`, { method: 'GET', credentials: 'include' }),
-                    fetch(`/api/auth/allUsers`, { method: 'GET', credentials: 'include' }),
                 ]);
 
                 if (categoriesRes.ok) {
@@ -52,14 +51,6 @@ const Home = () => {
                     setSeries(seriesData.series);
                 } else {
                     throw new Error(`Failed to fetch characters: ${seriesDataRes.statusText}`);
-                }
-
-                if (userDataRes.ok) {
-                    const userData = await userDataRes.json();
-                    setUsers(userData.users);
-                } else {
-                    setUsers([]);
-                    throw new Error(`Failed to fetch characters: ${userDataRes.statusText}`);
                 }
             } catch (err) {
                 console.error('Failed to load data', err);

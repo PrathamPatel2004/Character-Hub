@@ -2,6 +2,7 @@ import CharacterModel from '../Models/CharacterModel.js';
 import SeriesModel from '../Models/SeriesModel.js';
 import sendEmail from '../Config/sendEmail.js';
 import UserModel from '../Models/UserModel.js';
+import CommentModel from '../Models/CommentsModel.js';
 
 export const getCharacter = async (req, res) => {
     try {
@@ -20,6 +21,64 @@ export const getCharacters = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message : 'Failed to fetch Characters.' });
+    }
+};
+
+export const updateCharacterData = async (req, res) => {
+    const { id } = req.params;
+    const { userId } = req.user;
+    const { characterImage, description, tags = [], facts = [], achievements = [], powers = [] } = req.body;
+
+    try {
+        const character = CharacterModel.findById(id);
+        if (!character) {
+            return res.status(404).json({ message: 'Character not found.' });
+        }
+
+        if (character.addedBy?.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have permission to edit this character.' });
+        }
+
+        if (characterImage) character.characterImage = characterImage;
+        if (description) character.description = description;
+        character.tags = [...new Set(tags.map(tag => tag.toLowerCase().trim()))];
+        character.facts = facts.filter(f => f?.trim() !== '');
+        character.achievements = achievements.filter(a => a?.trim() !== '');
+        character.powers = powers.filter(p => p?.trim() !== '');
+ 
+        await character.save();
+        
+        res.status(200).json({ message : 'Character updated successfully.' });
+    } catch (err) {
+        console.error('Error updating character : ', err);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+}
+
+export const deleteCharacterData = async (req, res) => {
+    const { id } = req.params;
+    const { userId } = req.user;
+ 
+    try {
+        const character = await CharacterModel.findById(id);
+        if (!character) {
+            return res.status(404).json({ message: 'Character not found.' });
+        }
+ 
+        if (character.addedBy?.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have permission to delete this character.' });
+        }
+ 
+        await CommentModel.deleteMany({ commentOnCharacter : character._id });
+        await SeriesModel.findByIdAndUpdate(character.seriesName, { $pull : { characters : character._id } });
+        await UserModel.findByIdAndUpdate(character.addedBy, { $pull : { charactersAdd : character._id } });
+ 
+        await character.deleteOne();
+        
+        res.status(200).json({ message: 'Character deleted successfully.' });
+    } catch (err) {
+        console.error('Error deleting character : ', err);
+        res.status(500).json({ message: 'Server error. Please try again.' });
     }
 };
 
