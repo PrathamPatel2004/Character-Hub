@@ -21,6 +21,7 @@ export const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
         const otpExpiresTime = Date.now() + 10 * 60 * 1000;
         const expireAt = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -29,7 +30,7 @@ export const registerUser = async (req, res) => {
             email,
             password : hashedPassword,
             isVerified : false,
-            otp,
+            otp : hashedOtp,
             otpExpires : otpExpiresTime,
             expireAt,
         });
@@ -61,7 +62,8 @@ export const OTPVerification = async (req, res) => {
         if (!user) return res.status(404).json({ message : 'User not found' });
         if (user.isVerified) return res.status(400).json({ message : 'User already verified' });
 
-        if (user.otp !== otp) {
+        const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+        if (user.otp !== hashedOtp) {
             return res.status(400).json({ message : 'Invalid OTP code' });
         }
 
@@ -91,7 +93,7 @@ export const ResendOTP = async (req, res) => {
         if (user.isVerified) return res.status(400).json({ message : 'User already verified' });
 
         const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-        user.otp = newOtp;
+        user.otp = crypto.createHash('sha256').update(newOtp).digest('hex');
         user.otpExpires = Date.now() + 10 * 60 * 1000;
         user.expireAt = new Date(Date.now() + 15 * 60 * 1000);
         await user.save();
@@ -357,12 +359,11 @@ export const getProfileInfo = async (req, res) => {
         })
         .lean();
 
-    if (!user) {
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({
-            message: 'Profile info fetched successfully', user });
+        res.status(200).json({ message: 'Profile info fetched successfully', user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
@@ -370,28 +371,28 @@ export const getProfileInfo = async (req, res) => {
 };
 
 export const verifyAccessToken = (req, res) => {
-  const token = req.cookies?.accesstoken;
+    const token = req.cookies?.accesstoken;
 
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
 
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
-    return res.status(200).json({ valid: true, userId: decoded.id });
-  } catch (err) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
-  }
+        const decoded = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+        return res.status(200).json({ valid: true, userId: decoded.id });
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
 };
 
 export const logoutUser = (req, res) => {
     res.clearCookie('accesstoken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: '/',
     });
-  res.status(200).json({ message: 'Logged out' });
+    res.status(200).json({ message: 'Logged out' });
 };
 
 export const followUser = async (req, res) => {

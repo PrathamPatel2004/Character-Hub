@@ -56,7 +56,7 @@ export const searchQuery = async (req, res) => {
         const allCharacters = uniqueById([...directCharacterMatches, ...additionalCharacters]);
 
         const matchedCategories = await CategoryModel.find({
-            $or: regexes.map(r => ({ categoryName: r }))
+            $or: regexes.map(r => ({ category: r }))
         })
         .populate({
             path: "seriesNames",
@@ -90,7 +90,9 @@ export const searchQuery = async (req, res) => {
 
         const userMatches = await UserModel.find({
             $or: regexes.map(r => ({ username: r }))
-        }).lean();
+        })
+        .select('_id username profilePic bio')
+        .lean();
 
         res.json({
             series: finalSeries,

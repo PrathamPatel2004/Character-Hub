@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useFollowUser from '../Hooks/useFollow';
 import useComments from '../Hooks/useComments';
 import { useAuth } from '../Contexts/AuthContext';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Not_Found_Icon from '/Not_Found_Icon.svg';
 import AddIcon from '@mui/icons-material/Add'
 import SendIcon from '@mui/icons-material/Send';
@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 const SeriesPage = () => {
     const { id } = useParams();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [multipleSeries, setMultipleSeries] = useState([]);
     const [series, setSeries] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -78,6 +79,29 @@ const SeriesPage = () => {
         if (!commentText.trim()) return toast.error("Comment cannot be empty");
         const newComment = await addComment(commentText);
         if (newComment) setCommentText("");
+    };
+
+    const handleDeleteSeries = async () => {
+        if (!window.confirm(`Delete "${series?.seriesName}"? This cannot be undone.`)) return;
+
+        try {
+            const res = await fetch(`/api/series/series/${series._id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || 'Failed to delete series');
+                return;
+            }
+
+            toast.success('Series deleted');
+            navigate('/');
+        } catch (err) {
+            toast.error('Failed to delete series');
+        }
     };
 
     const handleFollow = async () => {
@@ -311,6 +335,23 @@ const SeriesPage = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {addedById == user?._id && (
+                                <div className="w-full flex justify-end items-end gap-3">
+                                    <button
+                                        onClick={handleDeleteSeries}
+                                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                                    >
+                                        Delete Series
+                                    </button>
+                                    <button
+                                        onClick={() => navigate(`/edit-series/${series._id}`)}
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                                    >
+                                        Edit Series
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="bg-white rounded-2xl shadow-lg p-8 mt-6">

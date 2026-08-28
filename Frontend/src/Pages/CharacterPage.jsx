@@ -106,6 +106,29 @@ const CharacterPage = () => {
         }
     };
 
+    const handleDeleteCharacter = async () => {
+        if (!window.confirm(`Delete "${character?.name}"? This cannot be undone.`)) return;
+
+        try {
+            const res = await fetch(`/api/characters/character/${character._id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || 'Failed to delete character');
+                return;
+            }
+
+            toast.success('Character deleted');
+            navigate(`/series/${character.seriesName?._id}`);
+        } catch (err) {
+            toast.error('Failed to delete character');
+        }
+    };
+
     const handleAddComment = async () => {
         if (!commentText.trim()) return toast.error("Comment cannot be empty");
         const newComment = await addComment(commentText);
@@ -295,7 +318,13 @@ const CharacterPage = () => {
                             )}
 
                             {addedById == user?._id && (
-                                <div className="w-full flex justify-end items-end">
+                                <div className="w-full flex justify-end items-end gap-3">
+                                    <button
+                                        onClick={handleDeleteCharacter}
+                                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                                    >
+                                        Delete Character
+                                    </button>
                                     <button
                                         onClick={() => navigate(`/edit-character/${character._id}`)}
                                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"

@@ -30,7 +30,7 @@ export const updateCharacterData = async (req, res) => {
     const { characterImage, description, tags = [], facts = [], achievements = [], powers = [] } = req.body;
 
     try {
-        const character = CharacterModel.findById(id);
+        const character = await CharacterModel.findById(id);
         if (!character) {
             return res.status(404).json({ message: 'Character not found.' });
         }
@@ -45,36 +45,33 @@ export const updateCharacterData = async (req, res) => {
         character.facts = facts.filter(f => f?.trim() !== '');
         character.achievements = achievements.filter(a => a?.trim() !== '');
         character.powers = powers.filter(p => p?.trim() !== '');
- 
         await character.save();
         
-        res.status(200).json({ message : 'Character updated successfully.' });
+        res.status(200).json({ message: 'Character updated successfully.', character });
     } catch (err) {
         console.error('Error updating character : ', err);
         res.status(500).json({ message: 'Server error. Please try again.' });
     }
-}
+};
 
 export const deleteCharacterData = async (req, res) => {
     const { id } = req.params;
     const { userId } = req.user;
- 
+
     try {
         const character = await CharacterModel.findById(id);
         if (!character) {
             return res.status(404).json({ message: 'Character not found.' });
         }
- 
         if (character.addedBy?.toString() !== userId) {
             return res.status(403).json({ message: 'You do not have permission to delete this character.' });
         }
- 
+
         await CommentModel.deleteMany({ commentOnCharacter : character._id });
         await SeriesModel.findByIdAndUpdate(character.seriesName, { $pull : { characters : character._id } });
         await UserModel.findByIdAndUpdate(character.addedBy, { $pull : { charactersAdd : character._id } });
- 
         await character.deleteOne();
-        
+
         res.status(200).json({ message: 'Character deleted successfully.' });
     } catch (err) {
         console.error('Error deleting character : ', err);
@@ -103,8 +100,6 @@ export const addCharacterData = async (req, res) => {
     } = req.body;
 
     const { id } = req.user;
-    const user = await UserModel.findById(id);
-    const { email, _id } = user;
 
     try {
         const trimmedName = name?.trim();
